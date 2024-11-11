@@ -6,6 +6,9 @@ class BrandDb {
   factory BrandDb() => _instance;
   BrandDb._internal();
 
+
+
+
   static const String brandBoxName = 'brands';
 
   Future<void> addBrand(BrandModel brand) async {
