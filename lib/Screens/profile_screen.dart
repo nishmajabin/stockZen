@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +23,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? userName;
   String? email;
+  String? pickedImage;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       userName = user.name.toUpperCase();
       email = user.email.toLowerCase();
+      pickedImage = user.image;
     });
   }
 
@@ -129,14 +135,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 radius: 40,
                 backgroundColor: primaryColor,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 50,
-                ),
+                child: pickedImage != null
+                    ? Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: FileImage(File(pickedImage!)),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : const CircleAvatar(
+                        radius: 40,
+                        backgroundColor: primaryColor,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 50,
+                        )),
               ),
             ),
             const SizedBox(height: 30),
@@ -172,13 +191,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             end: Alignment.centerRight),
                         borderRadius: BorderRadius.circular(50)),
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        final value = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const EditProfileScreen(),
                           ),
                         );
+                        if (value != null) {
+                          setState(() {
+                            fetchAndSetUserName();
+                          });
+                        }
                       },
                       label: const Text(
                         'Edit Profile',
@@ -241,13 +265,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     (context),
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PrivacyPolicyScreen()));
+                                            const PrivacyPolicyScreen()));
                               },
                               iconColor: primaryColor,
                               textColor: primaryColor,
-                              leading: Icon(Icons.privacy_tip),
-                              title: Text('Privacy Policy'),
-                              trailing: Icon(
+                              leading: const Icon(Icons.privacy_tip),
+                              title: const Text('Privacy Policy'),
+                              trailing: const Icon(
                                 Icons.arrow_forward_ios,
                                 size: 20,
                               ),

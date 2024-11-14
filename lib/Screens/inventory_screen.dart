@@ -1,9 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/add_brand_screen.dart';
 import 'package:stockzen/Screens/add_category_screen.dart';
+import 'package:stockzen/Screens/add_product_screen.dart';
 import 'package:stockzen/Screens/brand_list_screen.dart';
 import 'package:stockzen/Screens/category_list_screen.dart';
 import 'package:stockzen/functions/brand_db.dart';
@@ -44,7 +44,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
       final fetchedBrands = _brandDbFunction.getBrands();
       setState(() {
         brands = fetchedBrands;
-        log('fetched brands');
       });
     } catch (e) {
       print("Error fetching brands: $e");
@@ -146,8 +145,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   'Add Product',
                   style: TextStyle(color: primaryColor),
                 ),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => AddProductScreen()));
                 },
               ),
             ],
@@ -168,7 +169,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [primaryColor, primaryColor2, primaryColor],
-            stops: [0.0, 0.5, 1.0],
+            stops: [0.0, 4, 1.0],
           ),
         ),
         child: Column(
@@ -202,7 +203,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 5),
+                            padding: const EdgeInsets.only(left: 4),
                             child: CircleAvatar(
                               radius: 22,
                               backgroundColor: Colors.white,
@@ -413,8 +414,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
-            blurRadius: 4,
-            offset: Offset(2, 2),
+            spreadRadius: 4,
+            blurRadius: 3,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -441,7 +443,16 @@ class _InventoryScreenState extends State<InventoryScreen> {
               },
             ),
             Container(
-              color: Colors.black.withOpacity(0.4),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Colors.black.withOpacity(0.1),
+                  Colors.black.withOpacity(0.3),
+                  Colors.black.withOpacity(1)
+                ],
+              )),
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.only(top: 100),

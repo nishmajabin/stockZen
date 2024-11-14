@@ -38,7 +38,9 @@ class _SignupScreenState extends State<SignupScreen> {
     final user = UserModel(
         name: nameController.text,
         email: emailController.text,
-        password: passwordController.text);
+        password: passwordController.text,
+        image: null);
+        
     addUser(user);
   }
 

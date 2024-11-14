@@ -9,6 +9,12 @@ class UserModel {
   String email;
   @HiveField(2)
   String password;
+  @HiveField(3)
+  String? image;
 
-  UserModel({required this.name, required this.email, required this.password});
+  UserModel(
+      {required this.name,
+      required this.email,
+      required this.password,
+      this.image});
 }
