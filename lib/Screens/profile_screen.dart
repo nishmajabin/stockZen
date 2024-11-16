@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -70,11 +70,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   userLogout();
                 },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: const Text(
                   'Logout',
                   style: TextStyle(color: Colors.white),
                 ),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               )
             ],
           );

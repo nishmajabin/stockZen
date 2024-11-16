@@ -8,15 +8,15 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   colors: [primaryColor, primaryColor2],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight)),
           child: AppBar(
-            title: Text(
+            title: const Text(
               'Privacy Policy',
             ),
             backgroundColor: Colors.transparent,
@@ -25,7 +25,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
+      body: const Column(
         children: [
           ListTile(
             title: Text(
@@ -34,7 +34,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
           ),
           Divider(
-            color: const Color.fromARGB(32, 100, 100, 100),
+            color: Color.fromARGB(32, 100, 100, 100),
             thickness: 1.5,
           ),
           Text('Privacy Policy'),

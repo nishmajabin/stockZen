@@ -44,8 +44,8 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
               child: Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text('Camera'),
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
                 iconColor: primaryColor,
                 textColor: primaryColor,
                 onTap: () {
@@ -54,8 +54,8 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Gallery'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
                 iconColor: primaryColor,
                 textColor: primaryColor,
                 onTap: () {
@@ -72,15 +72,15 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   colors: [primaryColor, primaryColor2],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight)),
           child: AppBar(
-            title: Text(
+            title: const Text(
               'Add Brand',
             ),
             backgroundColor: Colors.transparent,

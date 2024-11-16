@@ -8,6 +8,7 @@ import 'package:stockzen/Screens/brand_list_screen.dart';
 import 'package:stockzen/Screens/category_list_screen.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
+import 'package:stockzen/functions/userdb.dart';
 import 'package:stockzen/models/brand_model.dart';
 import 'package:stockzen/models/category_model.dart';
 import 'package:stockzen/Screens/profile_screen.dart';
@@ -28,10 +29,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
   List<BrandModel> brands = [];
   final BrandDb _brandDbFunction = BrandDb();
   bool _isLoadingBrands = true;
+  String? pickedImage;
 
   @override
   void initState() {
     super.initState();
+    fetchUserImage();
     _fetchCategories();
     _fetchBrands();
   }
@@ -71,6 +74,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
         _isLoadingCategories = false;
       });
     }
+  }
+
+  Future<void> fetchUserImage() async {
+    final user = await fetchUser();
+    setState(() {
+      pickedImage = user.image;
+    });
   }
 
   void _onItemTapped(int index) {
@@ -148,7 +158,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 onTap: () async {
                   Navigator.pop(context);
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => AddProductScreen()));
+                      MaterialPageRoute(builder: (ctx) => const AddProductScreen()));
                 },
               ),
             ],
@@ -205,22 +215,49 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 4),
                             child: CircleAvatar(
-                              radius: 22,
+                              radius: 21,
                               backgroundColor: Colors.white,
-                              child: IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ProfileScreen(),
+                              child: pickedImage != null
+                                  ? GestureDetector(
+                                      onTap: () async {
+                                        final value =
+                                            await Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (ctx) =>
+                                                        const ProfileScreen()));
+                                        if (value != null) {
+                                          setState(() {
+                                            fetchUserImage();
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image:
+                                                FileImage(File(pickedImage!)),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    const ProfileScreen()));
+                                      },
+                                      child: const CircleAvatar(
+                                          radius: 22,
+                                          backgroundColor: Colors.white,
+                                          child: Icon(
+                                            Icons.person,
+                                            color: primaryColor,
+                                            size: 28,
+                                          )),
                                     ),
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.person,
-                                  color: primaryColor,
-                                ),
-                              ),
                             ),
                           ),
                         ],
@@ -364,6 +401,75 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ),
               ),
             ),
+              const SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Text(
+                    'Products',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BrandListScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'More...',
+                      style: TextStyle(color: secondColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: SizedBox(
+                width: double.infinity,
+                height: 140,
+                child: _isLoadingBrands
+                    ? const Center(child: CircularProgressIndicator())
+                    : brands.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No products yet. Click + to add brands.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: brands.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: _buildCategoryCard(
+                                  brands[index].name,
+                                  brands[index].imagePath,
+                                ),
+                              );
+                            },
+                          ),
+              ),
+            ),
+
           ],
         ),
       ),
@@ -411,7 +517,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       width: 140,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             spreadRadius: 4,

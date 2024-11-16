@@ -11,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [
                 secondaryColor,
@@ -23,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
               stops: [0.1, 0.5, 1.0])),
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Stack(children: [
@@ -33,16 +33,16 @@ class SettingsScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: primaryColor,
                 ),
               ),
             ),
-            Align(
+            const Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(top: 15),
+                padding: EdgeInsets.only(top: 15),
                 child: Text(
                   'Settings',
                   style: TextStyle(
@@ -53,10 +53,10 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
           ]),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          ListTile(
+          const ListTile(
             leading: Icon(
               Icons.verified_user,
             ),
@@ -69,13 +69,13 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             onTap: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => AboutUsScreen()));
+                  .push(MaterialPageRoute(builder: (ctx) => const AboutUsScreen()));
             },
-            leading: Icon(Icons.info),
-            title: Text('About us'),
+            leading: const Icon(Icons.info),
+            title: const Text('About us'),
             textColor: primaryColor,
             iconColor: primaryColor,
-            titleTextStyle: TextStyle(fontWeight: FontWeight.w500),
+            titleTextStyle: const TextStyle(fontWeight: FontWeight.w500),
           )
         ],
       ),

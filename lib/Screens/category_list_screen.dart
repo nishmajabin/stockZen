@@ -46,15 +46,15 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   colors: [primaryColor, primaryColor2],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight)),
           child: AppBar(
-            title: Text(
+            title: const Text(
               'All Categories',
             ),
             backgroundColor: Colors.transparent,

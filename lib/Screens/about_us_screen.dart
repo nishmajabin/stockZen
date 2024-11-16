@@ -199,10 +199,10 @@ process to make it more efficient and accessible.
               style: TextStyle(height: 1.5),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 35,
           ),
-          Text(
+          const Text(
             'Version 1.0',
             style: TextStyle(color: Color.fromARGB(255, 52, 99, 130)),
           ),
