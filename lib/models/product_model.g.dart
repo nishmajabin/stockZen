@@ -16,15 +16,41 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ProductModel()..productName = fields[0] as String?;
+    return ProductModel(
+      id: fields[0] as int?,
+      productName: fields[1] as String,
+      category: fields[2] as String,
+      brand: fields[3] as String,
+      productImagePath: fields[4] as String,
+      color: fields[5] as String,
+      quantity: fields[6] as String,
+      price: fields[7] as String,
+      description: fields[8] as String,
+    );
   }
 
   @override
   void write(BinaryWriter writer, ProductModel obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(9)
       ..writeByte(0)
-      ..write(obj.productName);
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.productName)
+      ..writeByte(2)
+      ..write(obj.category)
+      ..writeByte(3)
+      ..write(obj.brand)
+      ..writeByte(4)
+      ..write(obj.productImagePath)
+      ..writeByte(5)
+      ..write(obj.color)
+      ..writeByte(6)
+      ..write(obj.quantity)
+      ..writeByte(7)
+      ..write(obj.price)
+      ..writeByte(8)
+      ..write(obj.description);
   }
 
   @override

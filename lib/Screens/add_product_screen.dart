@@ -5,8 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
+import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/models/brand_model.dart';
 import 'package:stockzen/models/category_model.dart';
+import 'package:stockzen/models/product_model.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -18,7 +20,15 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _productController = TextEditingController();
-  late final TextEditingController _categoryController = TextEditingController();
+  late final TextEditingController _categoryController =
+      TextEditingController();
+  late final TextEditingController _brandController = TextEditingController();
+  late final TextEditingController _colorController = TextEditingController();
+  late final TextEditingController _quantityController =
+      TextEditingController();
+  late final TextEditingController _priceController = TextEditingController();
+  late final TextEditingController _descriptionController =
+      TextEditingController();
 
   String? selectedCategory;
   List<CategoryModel> categories = [];
@@ -60,6 +70,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
     setState(() {
       _isLoadingBrands = false;
     });
+  }
+
+  Future<void> saveProduct(ProductModel product) async {
+    final product = await ProductModel(
+        productName: _productController.text,
+        category: _categoryController.text,
+        brand: _brandController.text,
+        productImagePath: _pickedImage!.path,
+        color: _colorController.text,
+        quantity: _quantityController.text,
+        price: _priceController.text,
+        description: _descriptionController.text);
+    ProductDb().addProduct(product);
+    Navigator.pop(context,1);
   }
 
   void _showSourceChoice() {
@@ -169,6 +193,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 35),
+                    child: Text(
+                      'Category:',
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
@@ -246,21 +282,33 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
-             Padding(
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 35),
+                    child: Text(
+                      'Brand:',
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
+              Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
-                  controller: _categoryController,
+                  controller: _brandController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(
-                        Icons.category,
+                        Icons.branding_watermark,
                         size: 25,
                         color: primaryColor,
                       ),
                       hintText: 'Select Brand',
                       hintStyle: const TextStyle(
                           color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Cate',
+                      labelText: 'Brand',
                       labelStyle: const TextStyle(color: primaryColor),
                       filled: true,
                       fillColor: const Color.fromARGB(128, 206, 206, 206),
@@ -284,17 +332,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 size: 28,
                               ),
                             ),
-                            value: selectedCategory,
+                            value: selectedBrand,
                             onChanged: (newValue) {
                               setState(() {
-                                selectedCategory = newValue;
-                                _categoryController.text = newValue!;
+                                selectedBrand = newValue;
+                                _brandController.text = newValue!;
                               });
                             },
-                            items: categories.map((category) {
+                            items: brands.map((brand) {
                               return DropdownMenuItem<String>(
-                                value: category.name,
-                                child: Text(category.name),
+                                value: brand.name,
+                                child: Text(brand.name),
                               );
                             }).toList(),
                           ),
@@ -314,7 +362,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               color: primaryColor, width: 1.4))),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select category';
+                      return 'Please select brand';
                     }
                     return null;
                   },

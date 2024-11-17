@@ -4,19 +4,40 @@ part 'product_model.g.dart';
 @HiveType(typeId: 4)
 class ProductModel {
   @HiveField(0)
-  String? productName;
+  int? id;
   @HiveField(1)
-  String? category;
+  String productName;
   @HiveField(2)
-  String? brand;
+  String category;
+
   @HiveField(3)
-  String? productImagePath;
+  String brand;
+
   @HiveField(4)
-  String? color;
+  String productImagePath;
+
   @HiveField(5)
-  String? quantity;
+  String color;
+
   @HiveField(6)
-  String? price;
+  String quantity;
+
   @HiveField(7)
-  String? description;
+  String price;
+
+  @HiveField(8)
+  String description;
+
+ ProductModel({
+  this.id,
+  required this.productName,
+  required this.category,
+  required this.brand,
+  required this.productImagePath,
+  required this.color,
+  required this.quantity,
+  required this.price,
+  required this.description,
+});
+
 }
