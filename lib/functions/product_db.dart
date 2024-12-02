@@ -18,13 +18,40 @@ class ProductDb {
     return productBox.values.toList();
   }
 
-  Future<void> deleteProduct(int key) async {
+  Future<void> deleteProduct(String id) async {
     final productBox = Hive.box<ProductModel>(productsBoxName);
-    await productBox.delete(key);
+    final index =
+        productBox.values.toList().indexWhere((product) => product.id == id);
+    await productBox.deleteAt(index);
   }
 
-  Future<void> updateProduct(int key, ProductModel updatedProduct) async {
+  Future<void> updateProduct(String key, ProductModel updatedProduct) async {
     final productBox = Hive.box<ProductModel>(productsBoxName);
-    await productBox.put(key, updatedProduct);
+    final index =
+        productBox.values.toList().indexWhere((value) => value.id == key);
+
+    await productBox.putAt(index, updatedProduct);
+  }
+
+  Future<List<ProductModel>> getProductsByBrands(String brandId) async {
+    List<ProductModel> productsB = [];
+    final productBox = Hive.box<ProductModel>(productsBoxName);
+    for (var value in productBox.values) {
+      if (value.brand == brandId) {
+        productsB.add(value);
+      }
+    }
+    return productsB;
+  }
+
+  Future<List<ProductModel>> getProductsByCategory(String categoryId) async {
+    List<ProductModel> productsC = [];
+    final productBox = Hive.box<ProductModel>(productsBoxName);
+    for (var value in productBox.values) {
+      if (value.category == categoryId) {
+        productsC.add(value);
+      }
+    }
+    return productsC;
   }
 }

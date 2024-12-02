@@ -30,8 +30,9 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
   }
 
   Future<void> saveBrand() async {
+    final id = DateTime.now().microsecond.toString();
     final brand = BrandModel(
-        name: _brandNameController.text, imagePath: _pickedImage!.path);
+        id: id, name: _brandNameController.text, imagePath: _pickedImage!.path);
     BrandDb().addBrand(brand);
     Navigator.pop(context, 1);
   }

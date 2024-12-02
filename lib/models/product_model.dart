@@ -4,7 +4,7 @@ part 'product_model.g.dart';
 @HiveType(typeId: 4)
 class ProductModel {
   @HiveField(0)
-  int? id;
+  String id;
   @HiveField(1)
   String productName;
   @HiveField(2)
@@ -28,16 +28,15 @@ class ProductModel {
   @HiveField(8)
   String description;
 
- ProductModel({
-  this.id,
-  required this.productName,
-  required this.category,
-  required this.brand,
-  required this.productImagePath,
-  required this.color,
-  required this.quantity,
-  required this.price,
-  required this.description,
-});
-
+  ProductModel({
+    required this.id,
+    required this.productName,
+    required this.category,
+    required this.brand,
+    required this.productImagePath,
+    required this.color,
+    required this.quantity,
+    required this.price,
+    required this.description,
+  });
 }

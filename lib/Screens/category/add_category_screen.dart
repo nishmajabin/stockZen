@@ -31,8 +31,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   Future<void> saveCategory() async {
+    final id = DateTime.now().microsecond.toString();
     final category = CategoryModel(
-        name: _categoryNameController.text, imagePath: _pickedImage!.path);
+        id: id,
+        name: _categoryNameController.text,
+        imagePath: _pickedImage!.path);
     CategoryDB().addCategory(category);
     Navigator.pop(context, 1);
   }

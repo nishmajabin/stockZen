@@ -5,7 +5,7 @@ part 'brand_model.g.dart';
 class BrandModel {
 
   @HiveField(0)
-  int? id;
+  String id;
 
   @HiveField(1)
   String name;
@@ -13,5 +13,5 @@ class BrandModel {
   @HiveField(2)
   String imagePath;
 
-  BrandModel({this.id, required this.name, required this.imagePath});
+  BrandModel({required this.id, required this.name, required this.imagePath});
 }

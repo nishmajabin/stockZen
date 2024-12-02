@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final BrandDb _brandDbFunction = BrandDb();
   bool _isLoadingBrands = true;
   File? _pickedImage;
+  String? brandId;
+  String? categoryId;
+  String? categoryName;
 
   Future<void> pickImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -72,21 +76,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
-  Future<void> saveProduct(ProductModel product) async {
-    final product = await ProductModel(
+  Future<void> saveProduct() async {
+    final String productId = DateTime.now().microsecond.toString();
+    final product = ProductModel(
         productName: _productController.text,
-        category: _categoryController.text,
-        brand: _brandController.text,
+        category: categoryId!,
+        brand: brandId!,
         productImagePath: _pickedImage!.path,
         color: _colorController.text,
         quantity: _quantityController.text,
         price: _priceController.text,
-        description: _descriptionController.text);
+        description: _descriptionController.text,
+        id: productId);
     ProductDb().addProduct(product);
-    Navigator.pop(context,1);
+
+    Navigator.pop(context, 1);
   }
 
-  void _showSourceChoice() {
+  void showSourceChoice() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -193,10 +200,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Align(
+              const Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 35),
+                    padding: EdgeInsets.only(left: 35),
                     child: Text(
                       'Category:',
                       style: TextStyle(
@@ -216,11 +223,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         size: 25,
                         color: primaryColor,
                       ),
-                      hintText: 'Select Category',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Category',
-                      labelStyle: const TextStyle(color: primaryColor),
                       filled: true,
                       fillColor: const Color.fromARGB(128, 206, 206, 206),
                       enabledBorder: OutlineInputBorder(
@@ -243,16 +245,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 size: 28,
                               ),
                             ),
-                            value: selectedCategory,
+                            value: categoryId,
                             onChanged: (newValue) {
                               setState(() {
                                 selectedCategory = newValue;
                                 _categoryController.text = newValue!;
+                                categoryId = selectedCategory;
                               });
                             },
                             items: categories.map((category) {
                               return DropdownMenuItem<String>(
-                                value: category.name,
+                                value: category.id,
                                 child: Text(category.name),
                               );
                             }).toList(),
@@ -282,10 +285,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Align(
+              const Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 35),
+                    padding: EdgeInsets.only(left: 35),
                     child: Text(
                       'Brand:',
                       style: TextStyle(
@@ -305,11 +308,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         size: 25,
                         color: primaryColor,
                       ),
-                      hintText: 'Select Brand',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Brand',
-                      labelStyle: const TextStyle(color: primaryColor),
                       filled: true,
                       fillColor: const Color.fromARGB(128, 206, 206, 206),
                       enabledBorder: OutlineInputBorder(
@@ -332,16 +330,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 size: 28,
                               ),
                             ),
-                            value: selectedBrand,
+                            value: brandId,
                             onChanged: (newValue) {
                               setState(() {
                                 selectedBrand = newValue;
                                 _brandController.text = newValue!;
+
+                                brandId = selectedBrand;
                               });
                             },
                             items: brands.map((brand) {
                               return DropdownMenuItem<String>(
-                                value: brand.name,
+                                value: brand.id,
                                 child: Text(brand.name),
                               );
                             }).toList(),
@@ -371,10 +371,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
+              const Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 35),
+                    child: Text(
+                      'Product Image:',
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: GestureDetector(
-                  onTap: _showSourceChoice,
+                  onTap: showSourceChoice,
                   child: Container(
                     width: double.infinity,
                     height: 160,
@@ -398,6 +410,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
+                  controller: _colorController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -444,6 +457,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
+                  controller: _quantityController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -490,6 +504,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
+                  controller: _priceController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -537,6 +552,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: TextFormField(
+                  controller: _descriptionController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -599,6 +615,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate() &&
                           _pickedImage != null) {
+                        saveProduct();
+                        log('hello>>>>>>>>>>>>>>>>>>>>>>>>>');
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

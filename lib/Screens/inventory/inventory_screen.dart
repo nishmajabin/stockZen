@@ -1,18 +1,27 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/add_brand_screen.dart';
-import 'package:stockzen/Screens/add_category_screen.dart';
-import 'package:stockzen/Screens/add_product_screen.dart';
-import 'package:stockzen/Screens/brand_list_screen.dart';
-import 'package:stockzen/Screens/category_list_screen.dart';
+import 'package:stockzen/Screens/brand/add_brand_screen.dart';
+import 'package:stockzen/Screens/category/add_category_screen.dart';
+import 'package:stockzen/Screens/product/add_product_screen.dart';
+import 'package:stockzen/Screens/brand/brand_list_screen.dart';
+import 'package:stockzen/Screens/category/category_list_screen.dart';
+import 'package:stockzen/Screens/inventory/widgets/custrow.dart';
+import 'package:stockzen/Screens/product/product_details_screen.dart';
+import 'package:stockzen/Screens/product/product_list_screen.dart';
+import 'package:stockzen/Screens/product/products_brands.dart';
+import 'package:stockzen/Screens/product/products_viewing_categorised.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
+import 'package:stockzen/functions/easy_functions/easy_functions_navigation.dart';
+import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/functions/userdb.dart';
 import 'package:stockzen/models/brand_model.dart';
 import 'package:stockzen/models/category_model.dart';
-import 'package:stockzen/Screens/profile_screen.dart';
-import '../constant.dart';
+import 'package:stockzen/Screens/profile/profile_screen.dart';
+import 'package:stockzen/models/product_model.dart';
+import '../../constant.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -29,7 +38,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
   List<BrandModel> brands = [];
   final BrandDb _brandDbFunction = BrandDb();
   bool _isLoadingBrands = true;
+  List<ProductModel> products = [];
+  final ProductDb _productDbfunction = ProductDb();
+  bool _isLoadingProducts = true;
+  // late ProductModel _product;
   String? pickedImage;
+  String? productId;
 
   @override
   void initState() {
@@ -37,6 +51,25 @@ class _InventoryScreenState extends State<InventoryScreen> {
     fetchUserImage();
     _fetchCategories();
     _fetchBrands();
+    _fetchProducts();
+  }
+
+  void _fetchProducts() async {
+    setState(() {
+      _isLoadingProducts = true;
+    });
+    try {
+      final fetchedProducts = _productDbfunction.getProduct();
+      setState(() {
+        products = fetchedProducts;
+      });
+    } catch (e) {
+      print("Error fetching products: $e");
+    } finally {
+      setState(() {
+        _isLoadingProducts = false;
+      });
+    }
   }
 
   void _fetchBrands() async {
@@ -157,8 +190,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
                 onTap: () async {
                   Navigator.pop(context);
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => const AddProductScreen()));
+                  final value = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddProductScreen(),
+                    ),
+                  );
+                  if (value != null) {
+                    setState(() {
+                      _fetchProducts();
+                    });
+                  }
                 },
               ),
             ],
@@ -220,11 +262,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               child: pickedImage != null
                                   ? GestureDetector(
                                       onTap: () async {
-                                        final value =
-                                            await Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (ctx) =>
-                                                        const ProfileScreen()));
+                                        final value = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    const ProfileScreen()));
                                         if (value != null) {
                                           setState(() {
                                             fetchUserImage();
@@ -268,39 +310,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
-                    'Categories',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CategoryListScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'More...',
-                      style: TextStyle(color: secondColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            buildCustomRow(
+                context: context,
+                title: 'Categories',
+                navigateTo: CategoryListScreen()),
             const SizedBox(
               height: 25,
             ),
@@ -324,9 +337,25 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 16.0),
-                                child: _buildCategoryCard(
-                                  categories[index].name,
-                                  categories[index].imagePath,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ProductsViewingScreen(
+                                                  categoryID:
+                                                      categories[index].id,
+                                                  categoryName:
+                                                      categories[index].name,
+                                                )));
+                                  },
+                                  child: buildCard(
+                                    categories[index],
+                                    CategoryModel,
+                                    categories[index].name,
+                                    categories[index].imagePath,
+                                  ),
                                 ),
                               );
                             },
@@ -336,39 +365,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
             const SizedBox(
               height: 50,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
-                    'Brands',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BrandListScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'More...',
-                      style: TextStyle(color: secondColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            buildCustomRow(
+                context: context,
+                title: 'Brands',
+                navigateTo: BrandListScreen()),
             const SizedBox(
               height: 25,
             ),
@@ -392,51 +392,36 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 16.0),
-                                child: _buildCategoryCard(
-                                  brands[index].name,
-                                  brands[index].imagePath,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductsViewingBrandScreen(
+                                                    brandID: brands[index].id,
+                                                    brandName:
+                                                        brands[index].name)));
+                                  },
+                                  child: buildCard(
+                                    brands[index],
+                                    BrandModel,
+                                    brands[index].name,
+                                    brands[index].imagePath,
+                                  ),
                                 ),
                               );
                             },
                           ),
               ),
             ),
-              const SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
-                    'Products',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BrandListScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'More...',
-                      style: TextStyle(color: secondColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            buildCustomRow(
+                context: context,
+                title: 'Products',
+                navigateTo: ProductListScreen()),
             const SizedBox(
               height: 25,
             ),
@@ -445,31 +430,43 @@ class _InventoryScreenState extends State<InventoryScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 140,
-                child: _isLoadingBrands
+                child: _isLoadingProducts
                     ? const Center(child: CircularProgressIndicator())
-                    : brands.isEmpty
+                    : products.isEmpty
                         ? const Center(
                             child: Text(
-                              'No products yet. Click + to add brands.',
+                              'No products yet. Click + to add products.',
                               style: TextStyle(color: Colors.white),
                             ),
                           )
                         : ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: brands.length,
+                            itemCount: products.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 16.0),
-                                child: _buildCategoryCard(
-                                  brands[index].name,
-                                  brands[index].imagePath,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ProductDetailsScreen(
+                                                  product: products[index],
+                                                )));
+                                  },
+                                  child: buildCard(
+                                    products[index],
+                                    ProductModel,
+                                    products[index].productName,
+                                    products[index].productImagePath,
+                                  ),
                                 ),
                               );
                             },
                           ),
               ),
             ),
-
           ],
         ),
       ),
@@ -512,7 +509,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, String imagePath) {
+  Widget buildCard(var product, var model, String title, String imagePath) {
     return Container(
       width: 140,
       decoration: BoxDecoration(
@@ -556,7 +553,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 colors: [
                   Colors.black.withOpacity(0.1),
                   Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(1)
+                  Colors.black.withOpacity(1),
                 ],
               )),
               alignment: Alignment.center,
@@ -572,6 +569,65 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  popupMenuTheme: const PopupMenuThemeData(
+                    color: primaryColor,
+                    textStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                child: PopupMenuButton<String>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  offset:
+                      const Offset(-90, 5), // Position the popup to the left
+                  onSelected: (value) {
+                    if (value == 'Edit') {
+                      // Handle eit action
+                      if (model == CategoryModel) {
+                      } else if (product == BrandModel) {
+                        log('its a brand');
+                      } else if (model == ProductModel) {
+                        final ProductModel newProduct = product;
+                        // navigateToEditProduct(newProduct, context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) =>
+                                    ProductDetailsScreen(product: newProduct)));
+                      } else {
+                        log('nothing selected');
+                      }
+                    } else if (value == 'Delete') {
+                      // Handle delete action
+                      print('Delete selected');
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                      value: 'Edit',
+                      child: ListTile(
+                        leading: Icon(Icons.edit, color: Colors.white),
+                        title:
+                            Text('Edit', style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'Delete',
+                      child: ListTile(
+                        leading: Icon(Icons.delete, color: Colors.white),
+                        title: Text('Delete',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

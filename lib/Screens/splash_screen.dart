@@ -4,7 +4,7 @@ import 'package:stockzen/Screens/sign_in_screen.dart';
 import 'package:stockzen/functions/userdb.dart';
 
 import 'package:stockzen/Screens/getstarted_screen.dart';
-import 'package:stockzen/Screens/inventory_screen.dart';
+import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
 import '../constant.dart';
 

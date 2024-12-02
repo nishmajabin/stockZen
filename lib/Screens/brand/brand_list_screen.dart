@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:stockzen/Screens/product/products_brands.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
+import 'package:stockzen/models/product_model.dart';
 
 class BrandListScreen extends StatefulWidget {
   const BrandListScreen({super.key});
@@ -16,6 +18,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
   List<BrandModel> brands = [];
   final BrandDb _brandDbFunction = BrandDb();
   bool _isLoadingBrands = true;
+  List<ProductModel> products = [];
 
   @override
   void initState() {
@@ -82,9 +85,19 @@ class _BrandListScreenState extends State<BrandListScreen> {
                     ),
                     itemCount: brands.length,
                     itemBuilder: (context, index) {
-                      return _buildCategoryCard(
-                        brands[index].name,
-                        brands[index].imagePath,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => ProductsViewingBrandScreen(
+                                      brandID: brands[index].id,
+                                      brandName: brands[index].name)));
+                        },
+                        child: _buildCategoryCard(
+                          brands[index].name,
+                          brands[index].imagePath,
+                        ),
                       );
                     },
                   ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/userdb.dart';
 import 'package:stockzen/models/usermodel.dart';
@@ -79,7 +80,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _editUserEmailController.text = editUser.email;
       _editUserPdController.text = editUser.password;
       image = editUser.image;
-  
     });
   }
 
@@ -88,7 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         name: _editUserNameController.text,
         email: _editUserEmailController.text,
         password: _editUserPdController.text,
-        image: _pickedImage!.path );
+        image: _pickedImage!.path);
     updateUser(editedUser);
   }
 
@@ -139,37 +139,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: primaryColor, width: 1.3)),
-                      child:CircleAvatar(
-  radius: 60,
-  foregroundColor: primaryColor,
-  backgroundColor: const Color.fromARGB(164, 145, 171, 194),
-  child: _pickedImage != null
-      ? Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: FileImage(_pickedImage!),
-              fit: BoxFit.cover,
-            ),
-          ),
-        )
-      : (image != null
-          ? Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: FileImage(File(image!)),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-          : const Icon(
-              Icons.person,
-              size: 55,
-              color: primaryColor,
-            )),
-),
-
+                      child: CircleAvatar(
+                        radius: 60,
+                        foregroundColor: primaryColor,
+                        backgroundColor:
+                            const Color.fromARGB(164, 145, 171, 194),
+                        child: _pickedImage != null
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: FileImage(_pickedImage!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            : (image != null
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: FileImage(File(image!)),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.person,
+                                    size: 55,
+                                    color: primaryColor,
+                                  )),
+                      ),
                     ),
                   ),
                 ),
@@ -198,124 +198,53 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(
               height: 50,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 35, right: 35),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _editUserNameController,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.person_outlined,
-                      size: 25,
-                      color: primaryColor,
-                    ),
-                    hintText: 'Change name',
-                    hintStyle: const TextStyle(
-                        color: Color.fromARGB(255, 98, 103, 108)),
-                    labelText: 'Name',
-                    labelStyle: const TextStyle(color: primaryColor),
-                    filled: true,
-                    fillColor: const Color.fromARGB(128, 206, 206, 206),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide: const BorderSide(
-                          color: primaryColor,
-                          width: 1.2,
-                        )),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide:
-                            const BorderSide(color: primaryColor, width: 1.4))),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the name';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+            CustomTextFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _editUserNameController,
+              icon: Icons.person_outlined,
+              hintText: 'Change Name',
+              labelText: 'Name',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the name';
+                } else {
+                  return null;
+                }
+              },
             ),
             const SizedBox(
               height: 30,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 35, right: 35),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _editUserEmailController,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.mail_outlined,
-                      size: 25,
-                      color: primaryColor,
-                    ),
-                    hintText: 'Enter email',
-                    hintStyle: const TextStyle(
-                        color: Color.fromARGB(255, 98, 103, 108)),
-                    labelText: 'Email',
-                    labelStyle: const TextStyle(color: primaryColor),
-                    filled: true,
-                    fillColor: const Color.fromARGB(128, 206, 206, 206),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide: const BorderSide(
-                          color: primaryColor,
-                          width: 1.2,
-                        )),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide:
-                            const BorderSide(color: primaryColor, width: 1.4))),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
+           CustomTextFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _editUserEmailController,
+              icon: Icons.mail_outlined,
+              hintText: 'Enter Email',
+              labelText: 'Email',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the email';
+                } else {
                   return null;
-                },
-              ),
+                }
+              },
             ),
             const SizedBox(
               height: 30,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 35, right: 35),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _editUserPdController,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.lock_outline,
-                      size: 25,
-                      color: primaryColor,
-                    ),
-                    hintText: 'Change Password',
-                    hintStyle: const TextStyle(
-                        color: Color.fromARGB(255, 98, 103, 108)),
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(color: primaryColor),
-                    filled: true,
-                    fillColor: const Color.fromARGB(128, 206, 206, 206),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide: const BorderSide(
-                          color: primaryColor,
-                          width: 1.2,
-                        )),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                        borderSide:
-                            const BorderSide(color: primaryColor, width: 1.4))),
-                validator: (value) {
-                  if (value == null || value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
+           CustomTextFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _editUserPdController,
+              icon: Icons.lock_outline,
+              hintText: 'Enter Password',
+              labelText: 'Email',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter password';
+                } else {
                   return null;
-                },
-              ),
+                }
+              },
             ),
             const SizedBox(
               height: 40,

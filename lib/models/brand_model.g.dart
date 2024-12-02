@@ -17,7 +17,7 @@ class BrandModelAdapter extends TypeAdapter<BrandModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return BrandModel(
-      id: fields[0] as int?,
+      id: fields[0] as String,
       name: fields[1] as String,
       imagePath: fields[2] as String,
     );

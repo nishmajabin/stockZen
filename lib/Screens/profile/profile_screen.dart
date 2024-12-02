@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stockzen/Screens/edit_profile_screen.dart';
+import 'package:stockzen/Screens/profile/edit_profile/edit_profile_screen.dart';
 import 'package:stockzen/Screens/privacy_policy_screen.dart';
 import 'package:stockzen/Screens/settings_screen.dart';
 import 'package:stockzen/Screens/sign_in_screen.dart';
 import 'package:stockzen/functions/userdb.dart';
-import 'package:stockzen/Screens/inventory_screen.dart';
+import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
-import '../constant.dart';
+import '../../constant.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

@@ -1,43 +1,43 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:stockzen/Screens/product/product_details_screen.dart';
 import 'package:stockzen/constant.dart';
-import 'package:stockzen/functions/category_db.dart';
-import 'package:stockzen/models/category_model.dart';
+import 'package:stockzen/functions/product_db.dart';
+import 'package:stockzen/models/product_model.dart';
 
-class CategoryListScreen extends StatefulWidget {
-  const CategoryListScreen({super.key});
+class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
 
   @override
-  State<CategoryListScreen> createState() => _CategoryListScreenState();
+  State<ProductListScreen> createState() => _ProductListScreenState();
 }
 
-class _CategoryListScreenState extends State<CategoryListScreen> {
-  List<CategoryModel> categories = [];
-  final CategoryDB _categoryDbFunction = CategoryDB();
-  bool _isLoadingCategory = true;
+class _ProductListScreenState extends State<ProductListScreen> {
+  List<ProductModel> products = [];
+  final ProductDb _productDbFunction = ProductDb();
+  bool _isLoadingProducts = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchCategories();
+    _fetchProducts();
   }
 
-  void _fetchCategories() async {
+  void _fetchProducts() async {
     setState(() {
-      _isLoadingCategory = true;
+      _isLoadingProducts = true;
     });
-
     try {
-      final fetchedCategories = _categoryDbFunction.getCategories();
+      final fetchedProducts = _productDbFunction.getProduct();
       setState(() {
-        categories = fetchedCategories;
+        products = fetchedProducts;
       });
     } catch (e) {
-      print("Error fetching categories: $e");
+      print("Error fetching products: $e");
     } finally {
       setState(() {
-        _isLoadingCategory = false;
+        _isLoadingProducts = false;
       });
     }
   }
@@ -55,7 +55,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                   end: Alignment.centerRight)),
           child: AppBar(
             title: const Text(
-              'All Categories',
+              'All Products',
             ),
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
@@ -63,12 +63,12 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           ),
         ),
       ),
-      body: _isLoadingCategory
+      body: _isLoadingProducts
           ? const Center(child: CircularProgressIndicator())
-          : categories.isEmpty
+          : products.isEmpty
               ? const Center(
                   child: Text(
-                    'No categories added yet!',
+                    'No Products added yet!',
                     style: TextStyle(color: primaryColor, fontSize: 16),
                   ),
                 )
@@ -81,11 +81,20 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
                     ),
-                    itemCount: categories.length,
+                    itemCount: products.length,
                     itemBuilder: (context, index) {
-                      return _buildCategoryCard(
-                        categories[index].name,
-                        categories[index].imagePath,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => ProductDetailsScreen(
+                                      product: products[index])));
+                        },
+                        child: _buildCategoryCard(
+                          products[index].productName,
+                          products[index].productImagePath,
+                        ),
                       );
                     },
                   ),
