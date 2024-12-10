@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
@@ -13,14 +14,15 @@ import 'package:stockzen/models/category_model.dart';
 import 'package:stockzen/models/product_model.dart';
 
 class EditProductScreen extends StatefulWidget {
+  final ProductModel product;
   final String productKey;
   final String productName;
   final String brand;
   final String category;
   final String image;
   final String color;
-  final String quantity;
-  final String price;
+  final int quantity;
+  final double price;
   final String description;
   const EditProductScreen({
     super.key,
@@ -33,6 +35,7 @@ class EditProductScreen extends StatefulWidget {
     required this.quantity,
     required this.price,
     required this.description,
+    required this.product,
   });
 
   @override
@@ -51,6 +54,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
       TextEditingController();
 
   String? selectedCategory;
+  String categoryName = '';
+  String brandName = '';
   List<CategoryModel> categories = [];
   final CategoryDB _categoryDbFunction = CategoryDB();
   bool _isLoadingCategory = true;
@@ -83,6 +88,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _editQuantityController = TextEditingController();
     _editPriceController = TextEditingController();
     _editDescriptionController = TextEditingController();
+    selectedCategory = widget.product.category;
     _loadCategories();
     _loadBrands();
     fetchAddedProduct();
@@ -90,6 +96,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _loadCategories() async {
     categories = _categoryDbFunction.getCategories();
+    log(widget.product.brand);
+    final cat = categories.firstWhere((value) => value.id == widget.category);
+    categoryName = cat.name;
     log(categories.first.name);
     setState(() {
       selectedCategory = widget.category;
@@ -99,8 +108,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _loadBrands() async {
     brands = _brandDbFunction.getBrands();
+    final currentBrand =
+        brands.firstWhere((brand) => brand.id == widget.product.brand);
+    log(currentBrand.name);
+    brandName = currentBrand.name;
+
     setState(() {
       selectedBrand = widget.brand;
+      brandName = currentBrand.name;
       _isLoadingBrands = false;
     });
   }
@@ -113,9 +128,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _editCategoryController.text = widget.category;
       _editBrandController.text = widget.brand;
       _editColorController.text = widget.color;
-      _editQuantityController.text = widget.quantity;
+      _editQuantityController.text = widget.quantity.toString();
 
-      _editPriceController.text = widget.price;
+      _editPriceController.text = widget.price.toString();
       _editDescriptionController.text = widget.description;
       image = widget.image;
     });
@@ -123,16 +138,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   Future<void> updatedProduct(String productKey) async {
     log('worked11111111');
-    final editedProduct = await ProductModel(
+    final editedProduct = ProductModel(
         productName: _editProductController.text,
         category: _editCategoryController.text,
         brand: _editBrandController.text,
         productImagePath: _pickedImage?.path ?? image!,
         color: _editColorController.text,
-        quantity: _editQuantityController.text,
-        price: _editPriceController.text,
+        quantity: int.parse(_editQuantityController.text),
+        price: double.parse(_editPriceController.text),
         description: _editDescriptionController.text,
-        id: '');
+        id: widget.product.id);
     ProductDb().updateProduct(productKey, editedProduct);
     log('worked');
 
@@ -199,49 +214,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
               const SizedBox(
                 height: 35,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _editProductController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.shopping_bag,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Product Name',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Product name',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please add product name';
-                    }
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _editProductController,
+                icon: Icons.shopping_bag,
+                hintText: 'Enter Product name',
+                labelText: 'Product Name',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter product name';
+                  } else {
                     return null;
-                  },
-                ),
+                  }
+                },
               ),
               const SizedBox(
                 height: 20,
@@ -291,7 +276,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 size: 28,
                               ),
                             ),
-                            value: selectedCategory ?? 'nishma',
+                            value: selectedCategory != null &&
+                                    categories.any((category) =>
+                                        category.name == selectedCategory)
+                                ? selectedCategory
+                                : null,
+                            hint: Text(
+                              '  $categoryName',
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0)),
+                            ),
                             onChanged: (newValue) {
                               setState(() {
                                 selectedCategory = newValue;
@@ -375,7 +369,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 size: 28,
                               ),
                             ),
-                            value: selectedBrand ?? 'siuyad',
+                            value: selectedBrand != null &&
+                                    brands.any(
+                                        (brand) => brand.name == selectedBrand)
+                                ? selectedBrand
+                                : null,
+                            hint: Text(
+                              brandName,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
                             onChanged: (newValue) {
                               setState(() {
                                 selectedBrand = newValue;
@@ -452,195 +456,74 @@ class _EditProductScreenState extends State<EditProductScreen> {
               const SizedBox(
                 height: 20,
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(left: 35, right: 35),
-              //   child: TextFormField(
-              //     controller: _editColorController,
-              //     autovalidateMode: AutovalidateMode.onUserInteraction,
-              //     decoration: InputDecoration(
-              //         prefixIcon: const Icon(
-              //           Icons.color_lens,
-              //           size: 25,
-              //           color: primaryColor,
-              //         ),
-              //         hintText: 'Enter Color',
-              //         hintStyle: const TextStyle(
-              //             color: Color.fromARGB(255, 98, 103, 108)),
-              //         labelText: 'Color',
-              //         labelStyle: const TextStyle(color: primaryColor),
-              //         filled: true,
-              //         fillColor: const Color.fromARGB(128, 206, 206, 206),
-              //         enabledBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //               color: primaryColor,
-              //               width: 1.2,
-              //             )),
-              //         focusedBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4)),
-              //         errorBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4)),
-              //         focusedErrorBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4))),
-              //     validator: (value) {
-              //       if (value == null || value.isEmpty) {
-              //         return 'Please enter color';
-              //       }
-              //       return null;
-              //     },
-              //   ),
-              // ),
-              const SizedBox(
-                height: 20,
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.only(left: 35, right: 35),
-              //   child: TextFormField(
-              //     controller: _editQuantityController,
-              //     autovalidateMode: AutovalidateMode.onUserInteraction,
-              //     decoration: InputDecoration(
-              //         prefixIcon: const Icon(
-              //           Icons.inventory_2,
-              //           size: 25,
-              //           color: primaryColor,
-              //         ),
-              //         hintText: 'Enter Quantity',
-              //         hintStyle: const TextStyle(
-              //             color: Color.fromARGB(255, 98, 103, 108)),
-              //         labelText: 'Quantity',
-              //         labelStyle: const TextStyle(color: primaryColor),
-              //         filled: true,
-              //         fillColor: const Color.fromARGB(128, 206, 206, 206),
-              //         enabledBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //               color: primaryColor,
-              //               width: 1.2,
-              //             )),
-              //         focusedBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4)),
-              //         errorBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4)),
-              //         focusedErrorBorder: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(7),
-              //             borderSide: const BorderSide(
-              //                 color: primaryColor, width: 1.4))),
-              //     validator: (value) {
-              //       if (value == null || value.isEmpty) {
-              //         return 'Please enter quantity';
-              //       }
-              //       return null;
-              //     },
-              //   ),
-              // ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _editPriceController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.attach_money,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Price',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Price',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter price';
-                    }
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _editColorController,
+                icon: Icons.color_lens,
+                hintText: 'Enter Color',
+                labelText: 'Color',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter color';
+                  } else {
                     return null;
-                  },
-                ),
+                  }
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _editDescriptionController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.description,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Add description',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Description',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Add description';
-                    }
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _editQuantityController,
+                icon: Icons.inventory_2,
+                hintText: 'Enter Quantity',
+                labelText: 'Quantity',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter quantity';
+                  } else {
                     return null;
-                  },
-                ),
+                  }
+                },
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _editPriceController,
+                icon: Icons.attach_money,
+                hintText: 'Enter Price',
+                labelText: 'Price',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter price';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _editDescriptionController,
+                icon: Icons.description,
+                hintText: 'Add Description',
+                labelText: 'Description',
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter description';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+             
               const SizedBox(
                 height: 25,
               ),

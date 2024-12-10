@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stockzen/models/brand_model.dart';
 import 'package:stockzen/models/category_model.dart';
+import 'package:stockzen/models/sales_model.dart';
 import 'package:stockzen/models/usermodel.dart';
 import 'package:stockzen/models/product_model.dart';
 import 'package:stockzen/Screens/splash_screen.dart';
@@ -18,6 +19,8 @@ Future<void> main() async {
   await Hive.openBox<BrandModel>('brands');
   Hive.registerAdapter(ProductModelAdapter());
   await Hive.openBox<ProductModel>('products');
+  Hive.registerAdapter(SalesModelAdapter());
+  await Hive.openBox<SalesModel>('sales');
 
   runApp(const StockApp());
 }

@@ -3,23 +3,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/brand/add_brand_screen.dart';
-import 'package:stockzen/Screens/category/add_category_screen.dart';
-import 'package:stockzen/Screens/product/add_product_screen.dart';
 import 'package:stockzen/Screens/brand/brand_list_screen.dart';
+import 'package:stockzen/Screens/brand/edit_brand_screen.dart';
+import 'package:stockzen/Screens/category/add_category_screen.dart';
+import 'package:stockzen/Screens/category/edit_category_screen.dart';
+import 'package:stockzen/Screens/product/add_product_screen.dart';
 import 'package:stockzen/Screens/category/category_list_screen.dart';
 import 'package:stockzen/Screens/inventory/widgets/custrow.dart';
+import 'package:stockzen/Screens/product/edit_product_screen.dart';
 import 'package:stockzen/Screens/product/product_details_screen.dart';
 import 'package:stockzen/Screens/product/product_list_screen.dart';
 import 'package:stockzen/Screens/product/products_brands.dart';
 import 'package:stockzen/Screens/product/products_viewing_categorised.dart';
+import 'package:stockzen/Screens/sales/sales_billing.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
-import 'package:stockzen/functions/easy_functions/easy_functions_navigation.dart';
 import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/functions/userdb.dart';
 import 'package:stockzen/models/brand_model.dart';
 import 'package:stockzen/models/category_model.dart';
-import 'package:stockzen/Screens/profile/profile_screen.dart';
+import 'package:stockzen/Screens/profile/profile/profile_screen.dart';
 import 'package:stockzen/models/product_model.dart';
 import '../../constant.dart';
 
@@ -116,13 +119,27 @@ class _InventoryScreenState extends State<InventoryScreen> {
     });
   }
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => InventoryScreen()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SalesPage()),
+        );
+        break;
+    }
   }
 
-  void _showAddBottomSheet() {
+  void showAddBottomSheet() {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -309,7 +326,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            Divider(
+              color: const Color.fromARGB(255, 200, 200, 200),
+            ),
+            const SizedBox(height: 20),
             buildCustomRow(
                 context: context,
                 title: 'Categories',
@@ -351,6 +371,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                                 )));
                                   },
                                   child: buildCard(
+                                    index,
                                     categories[index],
                                     CategoryModel,
                                     categories[index].name,
@@ -395,15 +416,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductsViewingBrandScreen(
-                                                    brandID: brands[index].id,
-                                                    brandName:
-                                                        brands[index].name)));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductsViewingBrandScreen(
+                                          brandID: brands[index].id,
+                                          brandName: brands[index].name,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: buildCard(
+                                    index,
                                     brands[index],
                                     BrandModel,
                                     brands[index].name,
@@ -456,6 +480,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                                 )));
                                   },
                                   child: buildCard(
+                                    index,
                                     products[index],
                                     ProductModel,
                                     products[index].productName,
@@ -471,7 +496,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddBottomSheet,
+        onPressed: showAddBottomSheet,
         backgroundColor: Colors.white,
         child: const Icon(
           Icons.add,
@@ -503,13 +528,19 @@ class _InventoryScreenState extends State<InventoryScreen> {
         currentIndex: _selectedIndex,
         selectedItemColor: primaryColor,
         unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+        onTap: onItemTapped,
         backgroundColor: Colors.white,
       ),
     );
   }
 
-  Widget buildCard(var product, var model, String title, String imagePath) {
+  Widget buildCard(
+    int index,
+    var product,
+    var model,
+    String title,
+    String imagePath,
+  ) {
     return Container(
       width: 140,
       decoration: BoxDecoration(
@@ -583,28 +614,70 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     Icons.more_vert,
                     color: Colors.white,
                   ),
-                  offset:
-                      const Offset(-90, 5), // Position the popup to the left
+                  offset: const Offset(-90, 5),
                   onSelected: (value) {
                     if (value == 'Edit') {
-                      // Handle eit action
                       if (model == CategoryModel) {
-                      } else if (product == BrandModel) {
-                        log('its a brand');
-                      } else if (model == ProductModel) {
-                        final ProductModel newProduct = product;
-                        // navigateToEditProduct(newProduct, context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (ctx) =>
-                                    ProductDetailsScreen(product: newProduct)));
+                                    EditCategoryScreen(category: product)));
+                      } else if (model == BrandModel) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) =>
+                                    EditBrandScreen(brand: product)));
+                      } else if (model == ProductModel) {
+                        final ProductModel newProduct = product;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) => EditProductScreen(
+                                      product: newProduct,
+                                      productKey: newProduct.id,
+                                      productName: newProduct.productName,
+                                      brand: newProduct.brand,
+                                      category: newProduct.category,
+                                      image: newProduct.productImagePath,
+                                      color: newProduct.color,
+                                      quantity: newProduct.quantity,
+                                      price: newProduct.price,
+                                      description: newProduct.description,
+                                    )));
                       } else {
                         log('nothing selected');
                       }
                     } else if (value == 'Delete') {
-                      // Handle delete action
-                      print('Delete selected');
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Delete Product'),
+                            content: const Text(
+                                'Are you sure you want to delete this product?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel',
+                                    style: TextStyle(color: Colors.grey)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  ProductDb().deleteProduct(product.id);
+                                  _fetchProducts();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Delete',
+                                    style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   },
                   itemBuilder: (BuildContext context) => [

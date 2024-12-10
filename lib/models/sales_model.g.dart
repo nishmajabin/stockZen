@@ -1,56 +1,50 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_model.dart';
+part of 'sales_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ProductModelAdapter extends TypeAdapter<ProductModel> {
+class SalesModelAdapter extends TypeAdapter<SalesModel> {
   @override
-  final int typeId = 3;
+  final int typeId = 4;
 
   @override
-  ProductModel read(BinaryReader reader) {
+  SalesModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ProductModel(
+    return SalesModel(
       id: fields[0] as String,
-      productName: fields[1] as String,
-      category: fields[2] as String,
-      brand: fields[3] as String,
-      productImagePath: fields[4] as String,
-      color: fields[5] as String,
-      quantity: fields[6] as int,
-      price: fields[7] as double,
-      description: fields[8] as String,
+      date: fields[1] as String,
+      customerName: fields[2] as String,
+      customerNumber: fields[3] as String,
+      products: (fields[4] as List).cast<ProductModel>(),
+      totalAmount: fields[5] as double?,
+      saleQuantity: fields[6] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, ProductModel obj) {
+  void write(BinaryWriter writer, SalesModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.productName)
+      ..write(obj.date)
       ..writeByte(2)
-      ..write(obj.category)
+      ..write(obj.customerName)
       ..writeByte(3)
-      ..write(obj.brand)
+      ..write(obj.customerNumber)
       ..writeByte(4)
-      ..write(obj.productImagePath)
+      ..write(obj.products)
       ..writeByte(5)
-      ..write(obj.color)
+      ..write(obj.totalAmount)
       ..writeByte(6)
-      ..write(obj.quantity)
-      ..writeByte(7)
-      ..write(obj.price)
-      ..writeByte(8)
-      ..write(obj.description);
+      ..write(obj.saleQuantity);
   }
 
   @override
@@ -59,7 +53,7 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ProductModelAdapter &&
+      other is SalesModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

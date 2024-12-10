@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/product/edit_product_screen.dart';
 import 'package:stockzen/constant.dart';
+import 'package:stockzen/functions/brand_db.dart';
+import 'package:stockzen/functions/category_db.dart';
+import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/models/product_model.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product;
 
-   const ProductDetailsScreen({Key? key, required this.product})
+  const ProductDetailsScreen({Key? key, required this.product})
       : super(key: key);
 
   @override
@@ -16,11 +20,39 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsScreen> {
   late ProductModel _product;
-
+  String? categoryName;
+  String? brandName;
   @override
   void initState() {
     super.initState();
     _product = widget.product;
+    getProduct();
+    _loadBrands();
+    _loadCategories();
+  }
+
+  void _loadCategories() async {
+    final categories = CategoryDB().getCategories();
+
+    final cat =
+        categories.firstWhere((value) => value.id == widget.product.category);
+    categoryName = cat.name;
+
+    setState(() {});
+  }
+
+  void _loadBrands() async {
+    final brands = BrandDb().getBrands();
+    final currentBrand =
+        brands.firstWhere((brand) => brand.id == widget.product.brand);
+
+    brandName = currentBrand.name;
+
+    setState(() {});
+  }
+
+  Future<void> getProduct() async {
+    _product = await ProductDb().getProductById(widget.product.id);
   }
 
   void _navigateToEditPage() async {
@@ -28,6 +60,7 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
         context,
         MaterialPageRoute(
             builder: (ctx) => EditProductScreen(
+                  product: _product,
                   productName: _product.productName,
                   brand: _product.brand,
                   category: _product.category,
@@ -181,8 +214,8 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildDetailRow('Brand', _product.brand),
-            _buildDetailRow('Category', _product.category),
+            _buildDetailRow('Brand', brandName ?? _product.brand),
+            _buildDetailRow('Category', categoryName ?? _product.category),
             _buildDetailRow('Quantity', _product.quantity.toString()),
             _buildDetailRow('Color', _product.color),
           ],

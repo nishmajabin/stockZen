@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 part 'product_model.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 3)
 class ProductModel {
   @HiveField(0)
   String id;
@@ -20,10 +20,10 @@ class ProductModel {
   String color;
 
   @HiveField(6)
-  String quantity;
+  int quantity;
 
   @HiveField(7)
-  String price;
+  double price;
 
   @HiveField(8)
   String description;

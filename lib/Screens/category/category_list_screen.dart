@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/product/product_details_screen.dart';
 import 'package:stockzen/Screens/product/products_viewing_categorised.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/category_db.dart';
@@ -96,7 +95,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                                       categoryID: categories[index].id,
                                       categoryName: categories[index].name)));
                         },
-                        child: _buildCategoryCard(
+                        child: buildCategoryCard(
                           categories[index].name,
                           categories[index].imagePath,
                         ),
@@ -107,40 +106,47 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, String imagepath) {
+  Widget buildCategoryCard(String title, String imagepath) {
     return GestureDetector(
-      onLongPress: () {},
+      
       child: Card(
-        color: cardColor,
+        color: const Color.fromARGB(199, 7, 46, 74),
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.file(
-              File(imagepath),
-              height: 130,
-              width: 130,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.category,
-                  size: 48,
-                  color: primaryColor,
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            children: [
+              Image.file(
+                File(imagepath),
+                height: 155,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.category,
+                    size: 48,
+                    color: primaryColor,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 6.5),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

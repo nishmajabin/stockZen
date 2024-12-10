@@ -67,35 +67,28 @@ class _ProductsViewingBrandScreenState
           ? const Center(child: CircularProgressIndicator())
           : productsB.isEmpty
               ? const Center(child: Text("No products available."))
-              : productsB.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No categories added yet!',
-                        style: TextStyle(color: primaryColor, fontSize: 16),
-                      ),
-                    )
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
                         ),
                         itemCount: productsB.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
-                                  context,   
+                                  context,
                                   MaterialPageRoute(
                                       builder: (ctx) => ProductDetailsScreen(
-                                          product: productsB[index])));  
+                                          product: productsB[index])));
                             },
                             child: _buildCategoryCard(
                               productsB[index].productName,
-                              productsB[index].price,
+                              productsB[index].price as String,
                               productsB[index].productImagePath,
                             ),
                           );
@@ -107,42 +100,58 @@ class _ProductsViewingBrandScreenState
 
   Widget _buildCategoryCard(String title, String price, String imagepath) {
     return Card(
-      color: cardColor,
+      color: const Color.fromARGB(200, 182, 211, 233),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Image.file(
-            File(imagepath),
-            height: 130,
-            width: 130,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(
-                Icons.category,
-                size: 48,
-                color: primaryColor,
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          Text(
-            price,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          )
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            Image.file(
+              File(imagepath),
+              height: 150,
+              width: 200,
+              fit: BoxFit.fill,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.category,
+                  size: 48,
+                  color: primaryColor,
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    // color: Colors.white
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                'Price: ₹$price.00',
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

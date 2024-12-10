@@ -94,7 +94,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
                                       brandID: brands[index].id,
                                       brandName: brands[index].name)));
                         },
-                        child: _buildCategoryCard(
+                        child: buildBrandCard(
                           brands[index].name,
                           brands[index].imagePath,
                         ),
@@ -105,37 +105,45 @@ class _BrandListScreenState extends State<BrandListScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, String imagepath) {
+  Widget buildBrandCard(String title, String imagepath) {
     return Card(
+      color: const Color.fromARGB(199, 7, 46, 74),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.file(
-            File(imagepath),
-            height: 130,
-            width: 130,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(
-                Icons.category,
-                size: 48,
-                color: primaryColor,
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            Image.file(
+              File(imagepath),
+              height: 155,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.category,
+                  size: 48,
+                  color: primaryColor,
+                );
+              },
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6.5),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

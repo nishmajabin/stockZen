@@ -18,6 +18,12 @@ class ProductDb {
     return productBox.values.toList();
   }
 
+  Future<ProductModel> getProductById(String id) async {
+    final productBox = Hive.box<ProductModel>(productsBoxName);
+    final product = productBox.values.firstWhere((product) => product.id == id);
+    return product;
+  }
+
   Future<void> deleteProduct(String id) async {
     final productBox = Hive.box<ProductModel>(productsBoxName);
     final index =
@@ -53,5 +59,24 @@ class ProductDb {
       }
     }
     return productsC;
+  }
+
+  Future<void> reduceProductQuantity(
+    String productId,
+    int quantitySold,
+  ) async {
+    final box = await Hive.openBox<ProductModel>('products');
+
+    final product = box.get(productId);
+    if (product != null) {
+      // Check if enough stock is available
+      if (product.quantity >= quantitySold) {
+        product.quantity -= quantitySold; // Reduce quantity
+        await box.put(productId, product); // Update the product in the box
+      } else {
+        throw Exception(
+            'Not enough stock available for product: ${product.productName}');
+      }
+    }
   }
 }

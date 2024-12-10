@@ -21,15 +21,12 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _productController = TextEditingController();
-  late final TextEditingController _categoryController =
-      TextEditingController();
-  late final TextEditingController _brandController = TextEditingController();
-  late final TextEditingController _colorController = TextEditingController();
-  late final TextEditingController _quantityController =
-      TextEditingController();
-  late final TextEditingController _priceController = TextEditingController();
-  late final TextEditingController _descriptionController =
-      TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _brandController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   String? selectedCategory;
   List<CategoryModel> categories = [];
@@ -42,7 +39,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   File? _pickedImage;
   String? brandId;
   String? categoryId;
-  String? categoryName;
 
   Future<void> pickImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -77,23 +73,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> saveProduct() async {
-    final String productId = DateTime.now().microsecond.toString();
+    // Validate if required fields are null
+    if (categoryId == null || brandId == null || _pickedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all required fields.")),
+      );
+      return;
+    }
+
+    final String productId = DateTime.now().microsecondsSinceEpoch.toString();
     final product = ProductModel(
-        productName: _productController.text,
-        category: categoryId!,
-        brand: brandId!,
-        productImagePath: _pickedImage!.path,
-        color: _colorController.text,
-        quantity: _quantityController.text,
-        price: _priceController.text,
-        description: _descriptionController.text,
-        id: productId);
-    ProductDb().addProduct(product);
+      productName: _productController.text,
+      category: categoryId!,
+      brand: brandId!,
+      productImagePath: _pickedImage!.path,
+      color: _colorController.text,
+      quantity: int.tryParse(_quantityController.text) ?? 0, 
+      price: double.tryParse(_priceController.text) ?? 0.0, 
+      description: _descriptionController.text,
+      id: productId,
+    );
+
+    await ProductDb().addProduct(product);
 
     Navigator.pop(context, 1);
   }
 
-  void showSourceChoice() {
+
+  void _showSourceChoice() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -386,7 +393,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: GestureDetector(
-                  onTap: showSourceChoice,
+                  onTap: _showSourceChoice,
                   child: Container(
                     width: double.infinity,
                     height: 160,

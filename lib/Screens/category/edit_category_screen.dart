@@ -1,13 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/models/category_model.dart';
 
 class EditCategoryScreen extends StatefulWidget {
-  const EditCategoryScreen({super.key});
+  CategoryModel category;
+  EditCategoryScreen({super.key, required this.category});
 
   @override
   State<EditCategoryScreen> createState() => _EditCategoryScreenState();
@@ -17,6 +18,14 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
   // ignore: non_constant_identifier_names
   final TextEditingController _categoryNameController = TextEditingController();
+  void initState() {
+    super.initState();
+    setState(() {
+      _categoryNameController.text = widget.category.name;
+      _pickedImage = File(widget.category.imagePath);
+    });
+  }
+
   File? _pickedImage;
 
   Future<void> pickImage(ImageSource source) async {
@@ -30,14 +39,14 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     }
   }
 
-  Future<void> saveCategory() async {
-    final id = DateTime.now().microsecond.toString();
+  Future<void> updateCategory() async {     
     final category = CategoryModel(
-        id: id,
+        id: widget.category.id,
         name: _categoryNameController.text,
         imagePath: _pickedImage!.path);
-    CategoryDB().addCategory(category);
-    Navigator.pop(context, 1);
+    CategoryDB().updateCategory(category);
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (ctx) => InventoryScreen()), (_) => true);
   }
 
   void showImageSourceBottomSheet() {
@@ -158,14 +167,14 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                 onTap: showImageSourceBottomSheet,
                 child: Container(
                   width: double.infinity,
-                  height: 130,
+                  height: 250,
                   decoration: BoxDecoration(
                     border: Border.all(color: primaryColor),
                     borderRadius: BorderRadius.circular(5),
                     color: const Color.fromARGB(128, 206, 206, 206),
                   ),
                   child: _pickedImage != null
-                      ? Image.file(_pickedImage!, fit: BoxFit.cover)
+                      ? Image.file(_pickedImage!, fit: BoxFit.fitHeight)
                       : const Icon(
                           Icons.image,
                           size: 35,
@@ -190,7 +199,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                   onPressed: () {
                     if (_formKey.currentState!.validate() &&
                         _pickedImage != null) {
-                      saveCategory();
+                      updateCategory();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

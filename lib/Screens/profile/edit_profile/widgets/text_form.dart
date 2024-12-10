@@ -8,6 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? suffixText;
   final IconData? icon;
   final String? hintText;
+  final int? maxLines;
   final double? borderRadius;
   final String? labelText;
   final String? initialValue;
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final AutovalidateMode? autovalidateMode;
   final ValueChanged<String?>? onSaved;
+  final VoidCallback? onTap;
 
   const CustomTextFormField(
       {super.key,
@@ -30,7 +32,8 @@ class CustomTextFormField extends StatelessWidget {
       this.validator,
       this.keyboardType,
       this.autovalidateMode,
-      this.onSaved});
+      this.onSaved,
+      this.maxLines, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +43,8 @@ class CustomTextFormField extends StatelessWidget {
         autovalidateMode: autovalidateMode,
         controller: controller,
         decoration: InputDecoration(
-            prefixIcon: const Icon(
-              Icons.person_outlined,
+            prefixIcon: Icon(
+              icon,
               size: 25,
               color: primaryColor,
             ),
@@ -64,8 +67,13 @@ class CustomTextFormField extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(7),
                 borderSide: const BorderSide(color: primaryColor, width: 1.4))),
+        textInputAction: TextInputAction.newline,
+        onTap: onTap,
+      readOnly: onTap != null,
         validator: validator,
       ),
     );
   }
+
+ 
 }

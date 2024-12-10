@@ -12,17 +12,22 @@ class BrandDb {
     final brandBox = Hive.box<BrandModel>(brandBoxName);
     await brandBox.add(brand);
   }
+
   List<BrandModel> getBrands() {
     final brandBox = Hive.box<BrandModel>(brandBoxName);
     return brandBox.values.toList();
   }
-   Future<void> deleteBrand(int key) async {
+
+  Future<void> deleteBrand(int key) async {
     final brandBox = Hive.box<BrandModel>(brandBoxName);
     await brandBox.delete(key);
   }
 
-  Future<void> updateBrand(int key, BrandModel updatedBrand) async {
+  Future<void> updateBrand(BrandModel updatedBrand) async {
     final brandBox = Hive.box<BrandModel>(brandBoxName);
-    await brandBox.put(key, updatedBrand);
+    final index = brandBox.values
+        .toList()
+        .indexWhere((brand) => brand.id == updatedBrand.id);
+    await brandBox.putAt(index, updatedBrand);
   }
 }
