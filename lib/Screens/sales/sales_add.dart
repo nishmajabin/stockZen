@@ -90,8 +90,8 @@ class _AddSaleScreenState extends State<AddSaleScreen> {
         customerNumber: _customernumberController.text,
         products: _selectedProducts
             .map((sp) => ProductModel(
-                  productName: sp.product.productName,
-                  productImagePath: sp.product.productImagePath,
+                  name: sp.product.name,
+                  imagePath: sp.product.imagePath,
                   id: sp.product.id,
                   category: sp.product.category,
                   brand: sp.product.brand,
@@ -119,6 +119,7 @@ class _AddSaleScreenState extends State<AddSaleScreen> {
       content: Text(message),
       behavior: SnackBarBehavior.floating,
       duration: Duration(seconds: 3),
+      backgroundColor: const Color.fromARGB(255, 59, 151, 62),
     ));
   }
 
@@ -151,68 +152,68 @@ class _AddSaleScreenState extends State<AddSaleScreen> {
               ),
               CustomTextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _customernameController,
-                  labelText: 'Customer Name',
-                  icon: Icons.person,
-                  validator: (value) {
+                controller: _customernameController,
+                labelText: 'Customer Name',
+                icon: Icons.person,
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter customer name';
                   } else {
                     return null;
                   }
                 },
-                  ),
+              ),
               SizedBox(
                 height: 20,
               ),
               CustomTextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _customernumberController,
-                  labelText: 'Mobile Number',
-                  icon: Icons.phone,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
+                controller: _customernumberController,
+                labelText: 'Mobile Number',
+                icon: Icons.phone,
+                keyboardType: TextInputType.number,
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please enter customer's number";
                   } else {
                     return null;
                   }
                 },
-                  ),
+              ),
               SizedBox(
                 height: 40,
               ),
               CustomTextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _quantityController,
-                  labelText: 'Quantity',
-                  icon: Icons.confirmation_number,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
+                controller: _quantityController,
+                labelText: 'Quantity',
+                icon: Icons.confirmation_number,
+                keyboardType: TextInputType.number,
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter quantity';
                   } else {
                     return null;
                   }
                 },
-                  ),
+              ),
               SizedBox(
                 height: 20,
               ),
               CustomTextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _priceController,
-                  labelText: 'Price',
-                  icon: Icons.attach_money,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
+                controller: _priceController,
+                labelText: 'Price',
+                icon: Icons.attach_money,
+                keyboardType: TextInputType.number,
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter price';
                   } else {
                     return null;
                   }
                 },
-                  ),
+              ),
               const SizedBox(height: 16),
               SizedBox(height: 16),
               const SizedBox(height: 24),

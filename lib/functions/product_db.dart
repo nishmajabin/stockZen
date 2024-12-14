@@ -75,7 +75,7 @@ class ProductDb {
         await box.put(productId, product); // Update the product in the box
       } else {
         throw Exception(
-            'Not enough stock available for product: ${product.productName}');
+            'Not enough stock available for product: ${product.name}');
       }
     }
   }

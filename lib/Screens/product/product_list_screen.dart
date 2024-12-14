@@ -92,8 +92,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       product: products[index])));
                         },
                         child: _buildCategoryCard(
-                          products[index].productName,
-                          products[index].productImagePath,
+                          products[index].name,
+                          products[index].imagePath,
                         ),
                       );
                     },

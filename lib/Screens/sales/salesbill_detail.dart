@@ -96,7 +96,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
                 // print('Product: ${product.name}, Quantity: ${product.quantity}');
 
               return ListTile(
-                title: Text(product.productName),
+                title: Text(product.name),
                 subtitle: Text('Price: \$${product.price}'),
                 trailing: Text('Qty: ${product.quantity}'),
                 

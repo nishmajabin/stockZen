@@ -19,13 +19,13 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsScreen> {
-  late ProductModel _product;
+  late ProductModel product;
   String? categoryName;
   String? brandName;
   @override
   void initState() {
     super.initState();
-    _product = widget.product;
+    product = widget.product;
     getProduct();
     _loadBrands();
     _loadCategories();
@@ -34,9 +34,9 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
   void _loadCategories() async {
     final categories = CategoryDB().getCategories();
 
-    final cat =
+    final category =
         categories.firstWhere((value) => value.id == widget.product.category);
-    categoryName = cat.name;
+    categoryName = category.name;
 
     setState(() {});
   }
@@ -52,31 +52,25 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
   }
 
   Future<void> getProduct() async {
-    _product = await ProductDb().getProductById(widget.product.id);
+    product = await ProductDb().getProductById(widget.product.id);
   }
 
-  void _navigateToEditPage() async {
-    final updatedProduct = await Navigator.push(
+  void _navigateToEditPage() {
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (ctx) => EditProductScreen(
-                  product: _product,
-                  productName: _product.productName,
-                  brand: _product.brand,
-                  category: _product.category,
-                  image: _product.productImagePath,
-                  color: _product.color,
-                  quantity: _product.quantity,
-                  price: _product.price,
-                  description: _product.description,
-                  productKey: _product.id,
+                  product: product,
+                  productName: product.name,
+                  brand: product.brand,
+                  category: product.category,
+                  image: product.imagePath,
+                  color: product.color,
+                  quantity: product.quantity,
+                  price: product.price,
+                  description: product.description,
+                  productKey: product.id,
                 )));
-
-    if (updatedProduct != null) {
-      setState(() {
-        _product = updatedProduct;
-      });
-    }
   }
 
   @override
@@ -100,7 +94,7 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 350.0,
+      expandedHeight: 430.0,
       floating: false,
       pinned: true,
       backgroundColor: Colors.transparent,
@@ -128,8 +122,9 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        _product.productImagePath != null
-            ? Image.file(File(_product.productImagePath), fit: BoxFit.cover)
+        // ignore: unnecessary_null_comparison
+        product.imagePath != null
+            ? Image.file(File(product.imagePath), fit: BoxFit.cover)
             : Container(color: Colors.grey[200]),
         Container(
           decoration: BoxDecoration(
@@ -144,7 +139,7 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
           bottom: 40,
           left: 20,
           child: Text(
-            _product.productName,
+            product.name,
             style: TextStyle(
               color: Colors.white,
               fontSize: 28,
@@ -178,7 +173,7 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '₹${_product.price}',
+            '₹${product.price}',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -214,10 +209,10 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildDetailRow('Brand', brandName ?? _product.brand),
-            _buildDetailRow('Category', categoryName ?? _product.category),
-            _buildDetailRow('Quantity', _product.quantity.toString()),
-            _buildDetailRow('Color', _product.color),
+            _buildDetailRow('Brand', brandName ?? product.brand),
+            _buildDetailRow('Category', categoryName ?? product.category),
+            _buildDetailRow('Quantity', product.quantity.toString()),
+            _buildDetailRow('Color', product.color),
           ],
         ),
       ),
@@ -266,7 +261,7 @@ class _ProductDetailsPageState extends State<ProductDetailsScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            _product.description ?? 'No description available.',
+            product.description,
             style: TextStyle(
               fontSize: 16,
               height: 1.5,

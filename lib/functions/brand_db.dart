@@ -18,9 +18,15 @@ class BrandDb {
     return brandBox.values.toList();
   }
 
-  Future<void> deleteBrand(int key) async {
-    final brandBox = Hive.box<BrandModel>(brandBoxName);
-    await brandBox.delete(key);
+  // Future<void> deleteBrand(int key) async {
+  //   final brandBox = Hive.box<BrandModel>(brandBoxName);
+  //   await brandBox.delete(key);
+  // }
+  Future<void> deleteBrand(String id) async {
+    final productBox = Hive.box<BrandModel>(brandBoxName);
+    final index =
+        productBox.values.toList().indexWhere((product) => product.id == id);
+    await productBox.deleteAt(index);
   }
 
   Future<void> updateBrand(BrandModel updatedBrand) async {

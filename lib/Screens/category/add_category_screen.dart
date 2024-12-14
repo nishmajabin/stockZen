@@ -15,7 +15,6 @@ class AddCategoryScreen extends StatefulWidget {
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
-  // ignore: non_constant_identifier_names
   final TextEditingController _categoryNameController = TextEditingController();
   File? _pickedImage;
 

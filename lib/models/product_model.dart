@@ -6,7 +6,7 @@ class ProductModel {
   @HiveField(0)
   String id;
   @HiveField(1)
-  String productName;
+  String name;
   @HiveField(2)
   String category;
 
@@ -14,7 +14,7 @@ class ProductModel {
   String brand;
 
   @HiveField(4)
-  String productImagePath;
+  String imagePath;
 
   @HiveField(5)
   String color;
@@ -30,10 +30,10 @@ class ProductModel {
 
   ProductModel({
     required this.id,
-    required this.productName,
+    required this.name,
     required this.category,
     required this.brand,
-    required this.productImagePath,
+    required this.imagePath,
     required this.color,
     required this.quantity,
     required this.price,

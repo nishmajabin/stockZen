@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockzen/Screens/sign_in_screen.dart';
 import 'package:stockzen/functions/userdb.dart';
-
 import 'package:stockzen/Screens/getstarted_screen.dart';
 import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
@@ -68,28 +67,30 @@ class _SplashScreenState extends State<SplashScreen> {
             stops: [0.0, 0.5, 1.0],
           ),
         ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage('assets/images/logo.png'),
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'stockZen',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 25,
-                color: primaryColor,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'OleoScript',
-              ),
-            ),
-          ],
-        ),
+        child: Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Center(
+      child: Image.asset(
+        'assets/images/stockZennn.png',
+        width: 120,  // Adjust the width as needed
+        height: 120, // Adjust the height as needed
+      ),
+    ),
+    const SizedBox(height: 10),
+    const Text(
+      'stockZen',
+      style: TextStyle(
+        fontStyle: FontStyle.italic,
+        fontSize: 25,
+        color: primaryColor,
+        fontWeight: FontWeight.w900,
+        fontFamily: 'OleoScript',
+      ),
+    ),
+  ],
+),
+
       ),
     );
   }

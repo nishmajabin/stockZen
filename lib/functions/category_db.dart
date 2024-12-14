@@ -18,14 +18,20 @@ class CategoryDB {
     return categoryBox.values.toList();
   }
 
-  Future<void> deleteCategory(int key) async {
-    final categoryBox = Hive.box<CategoryModel>(boxName);
-    await categoryBox.delete(key);
+  // Future<void> deleteCategory(int key) async {
+  //   final categoryBox = Hive.box<CategoryModel>(boxName);
+  //   await categoryBox.delete(key);
+  // }
+  Future<void> deleteCategory(String id) async {
+    final productBox = Hive.box<CategoryModel>(boxName);
+    final index =
+        productBox.values.toList().indexWhere((product) => product.id == id);
+    await productBox.deleteAt(index);
   }
 
-  Future<void> updateCategory( CategoryModel updatedCategory) async {
+  Future<void> updateCategory(CategoryModel updatedCategory) async {
     final categoryBox = Hive.box<CategoryModel>(boxName);
-    final index = categoryBox.values 
+    final index = categoryBox.values
         .toList()
         .indexWhere((category) => category.id == updatedCategory.id);
     await categoryBox.putAt(index, updatedCategory);

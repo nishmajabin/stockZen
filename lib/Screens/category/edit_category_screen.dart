@@ -7,8 +7,8 @@ import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/models/category_model.dart';
 
 class EditCategoryScreen extends StatefulWidget {
-  CategoryModel category;
-  EditCategoryScreen({super.key, required this.category});
+  final CategoryModel category;
+  const EditCategoryScreen({super.key, required this.category});
 
   @override
   State<EditCategoryScreen> createState() => _EditCategoryScreenState();
@@ -39,14 +39,14 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     }
   }
 
-  Future<void> updateCategory() async {     
+  Future<void> updateCategory() async {
     final category = CategoryModel(
         id: widget.category.id,
         name: _categoryNameController.text,
         imagePath: _pickedImage!.path);
     CategoryDB().updateCategory(category);
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (ctx) => InventoryScreen()), (_) => true);
+        MaterialPageRoute(builder: (ctx) =>const InventoryScreen()), (_) => true);
   }
 
   void showImageSourceBottomSheet() {

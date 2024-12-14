@@ -11,7 +11,7 @@ import 'package:stockzen/Screens/sign_in_screen.dart';
 import 'package:stockzen/functions/userdb.dart';
 import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
-import '../../../constant.dart';
+import '../../constant.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,6 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> userLogout() async {
     final sharedpref = await SharedPreferences.getInstance();
     sharedpref.setBool(userLogged, false);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (ctx) => const SignInScreen()));
   }

@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/product/product_details_screen.dart';
 import 'package:stockzen/functions/product_db.dart';
@@ -8,31 +7,33 @@ import 'package:stockzen/models/product_model.dart';
 
 import '../../constant.dart';
 
-class ProductsViewingScreen extends StatefulWidget {
-  final String categoryID;
-  final String categoryName;
-  ProductsViewingScreen(
-      {super.key, required this.categoryID, required this.categoryName});
+class ProductsViewingBrandScreen extends StatefulWidget {
+  final String brandID;
+  final String brandName;
+  const ProductsViewingBrandScreen(
+      {super.key, required this.brandID, required this.brandName});
 
   @override
-  State<ProductsViewingScreen> createState() => _ProductsViewingScreenState();
+  State<ProductsViewingBrandScreen> createState() =>
+      _ProductsViewingBrandScreenState();
 }
 
-class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
-  List<ProductModel> productsC = [];
+class _ProductsViewingBrandScreenState
+    extends State<ProductsViewingBrandScreen> {
+  List<ProductModel> productsB = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchCategoryDetails();
+    _fetchBrandDetails();
   }
 
-  void _fetchCategoryDetails() async {
+  void _fetchBrandDetails() async {
     try {
-      final values = await ProductDb().getProductsByCategory(widget.categoryID);
+      final values = await ProductDb().getProductsByBrands(widget.brandID);
       setState(() {
-        productsC = values;
+        productsB = values; // Assuming values is a List<ProductModel>
         isLoading = false;
       });
     } catch (e) {
@@ -55,7 +56,7 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight)),
           child: AppBar(
-            title: Text("Products in ${widget.categoryName}"),
+            title: Text("Products by ${widget.brandName}"),
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
             centerTitle: true,
@@ -64,7 +65,7 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : productsC.isEmpty
+          : productsB.isEmpty
               ? const Center(child: Text("No products available."))
               : Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -75,7 +76,7 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                     ),
-                    itemCount: productsC.length,
+                    itemCount: productsB.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
@@ -83,12 +84,12 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (ctx) => ProductDetailsScreen(
-                                      product: productsC[index])));
+                                      product: productsB[index])));
                         },
-                        child: _buildCategoryCard(
-                          productsC[index].productName,
-                          productsC[index].price as String,
-                          productsC[index].productImagePath,
+                        child: _buildBrandCard(
+                          productsB[index].name,
+                          productsB[index].price.toString(),
+                          productsB[index].imagePath,
                         ),
                       );
                     },
@@ -97,7 +98,7 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, String price, String imagepath) {
+  Widget _buildBrandCard(String title, String price, String imagepath) {
     return Card(
       color: const Color.fromARGB(200, 182, 211, 233),
       elevation: 4,
@@ -108,13 +109,10 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
         borderRadius: BorderRadius.circular(12),
         child: Stack(
           children: [
-            SizedBox(
-              height: 10,
-            ),
             Image.file(
               File(imagepath),
               height: 150,
-              width: 200,
+              width: double.infinity,
               fit: BoxFit.fill,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
@@ -128,24 +126,24 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 25),
+                padding: const EdgeInsets.only(bottom: 20),
                 child: Text(
                   title,
                   style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor),
+                    fontSize: 17.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                'Price: ₹$price.00',
+                'Price: ₹$price',
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 24, 101, 26)),
+                    color: priceColor),
               ),
             )
           ],

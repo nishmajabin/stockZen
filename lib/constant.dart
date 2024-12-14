@@ -6,3 +6,4 @@ const secondColor = Color.fromARGB(255, 232, 243, 254);
 const thirdColor = Color.fromARGB(255, 92, 125, 152);
 const primaryColor2 = Color.fromRGBO(60, 110, 144, 1);
 const cardColor = Color.fromARGB(201, 107, 152, 184);
+const priceColor = Color.fromARGB(255, 24, 101, 26);

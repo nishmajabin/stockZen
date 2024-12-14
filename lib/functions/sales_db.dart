@@ -43,5 +43,5 @@ Future<String> getProductNameById(String productId) async {
   final product = productBox.get(productId);
   
   // Return the product name or an empty string if not found
-  return product?.productName ?? ''; // Change `name` to the appropriate field in your ProductModel
+  return product?.name ?? ''; // Change `name` to the appropriate field in your ProductModel
 }

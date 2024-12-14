@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/product/products_brands.dart';
+import 'package:stockzen/Screens/brand/products_brands.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
@@ -36,7 +35,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
         brands = fetchedBrands;
       });
     } catch (e) {
-      print("Error fetching categories: $e");
+      // print("Error fetching categories: $e");
     } finally {
       setState(() {
         _isLoadingBrands = false;

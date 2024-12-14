@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 
 import 'package:stockzen/constant.dart';
@@ -139,10 +140,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Future<void> updatedProduct(String productKey) async {
     log('worked11111111');
     final editedProduct = ProductModel(
-        productName: _editProductController.text,
+        name: _editProductController.text,
         category: _editCategoryController.text,
         brand: _editBrandController.text,
-        productImagePath: _pickedImage?.path ?? image!,
+        imagePath: _pickedImage?.path ?? image!,
         color: _editColorController.text,
         quantity: int.parse(_editQuantityController.text),
         price: double.parse(_editPriceController.text),
@@ -151,7 +152,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     ProductDb().updateProduct(productKey, editedProduct);
     log('worked');
 
-    Navigator.pop(context, editedProduct);
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (ctx) => InventoryScreen()), (_) => true);
   }
 
   void _showSourceChoice() {
@@ -513,8 +515,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 icon: Icons.description,
                 hintText: 'Add Description',
                 labelText: 'Description',
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter description';
@@ -523,7 +525,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   }
                 },
               ),
-             
               const SizedBox(
                 height: 25,
               ),

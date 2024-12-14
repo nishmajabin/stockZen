@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/product/product_details_screen.dart';
 import 'package:stockzen/functions/product_db.dart';
@@ -7,33 +8,32 @@ import 'package:stockzen/models/product_model.dart';
 
 import '../../constant.dart';
 
-class ProductsViewingBrandScreen extends StatefulWidget {
-  final String brandID;
-  final String brandName;
-  ProductsViewingBrandScreen(
-      {super.key, required this.brandID, required this.brandName});
+class ProductsViewingScreen extends StatefulWidget {
+  final String categoryID;
+  final String categoryName;
+  const ProductsViewingScreen(
+      {super.key, required this.categoryID, required this.categoryName});
 
   @override
-  State<ProductsViewingBrandScreen> createState() =>
-      _ProductsViewingBrandScreenState();
+  State<ProductsViewingScreen> createState() => _ProductsViewingScreenState();
 }
 
-class _ProductsViewingBrandScreenState
-    extends State<ProductsViewingBrandScreen> {
-  List<ProductModel> productsB = [];
+class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
+  List<ProductModel> productsC = [];
+  List<ProductModel> searchedProducts = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchBrandDetails();
+    _fetchCategoryDetails();
   }
 
-  void _fetchBrandDetails() async {
+  void _fetchCategoryDetails() async {
     try {
-      final values = await ProductDb().getProductsByBrands(widget.brandID);
+      final values = await ProductDb().getProductsByCategory(widget.categoryID);
       setState(() {
-        productsB = values; // Assuming values is a List<ProductModel>
+        productsC = values;
         isLoading = false;
       });
     } catch (e) {
@@ -56,7 +56,7 @@ class _ProductsViewingBrandScreenState
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight)),
           child: AppBar(
-            title: Text("Products by ${widget.brandName}"),
+            title: Text("Products in ${widget.categoryName}"),
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
             centerTitle: true,
@@ -65,36 +65,36 @@ class _ProductsViewingBrandScreenState
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : productsB.isEmpty
+          : productsC.isEmpty
               ? const Center(child: Text("No products available."))
-                  : Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
-                        itemCount: productsB.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (ctx) => ProductDetailsScreen(
-                                          product: productsB[index])));
-                            },
-                            child: _buildCategoryCard(
-                              productsB[index].productName,
-                              productsB[index].price as String,
-                              productsB[index].productImagePath,
-                            ),
-                          );
-                        },
-                      ),
+              : Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                     ),
+                    itemCount: productsC.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => ProductDetailsScreen(
+                                      product: productsC[index])));
+                        },
+                        child: _buildCategoryCard(
+                          productsC[index].name,
+                          productsC[index].price.toString(),
+                          productsC[index].imagePath,
+                        ),
+                      );
+                    },
+                  ),
+                ),
     );
   }
 
@@ -109,9 +109,6 @@ class _ProductsViewingBrandScreenState
         borderRadius: BorderRadius.circular(12),
         child: Stack(
           children: [
-            SizedBox(
-              height: 10,
-            ),
             Image.file(
               File(imagepath),
               height: 150,
@@ -129,25 +126,24 @@ class _ProductsViewingBrandScreenState
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 25),
                 child: Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    // color: Colors.white
-                  ),
+                      fontSize: 17.5,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor),
                 ),
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                'Price: ₹$price.00',
+                'Price: ₹$price',
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green),
+                    color: priceColor),
               ),
             )
           ],

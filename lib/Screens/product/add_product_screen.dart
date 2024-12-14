@@ -83,13 +83,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     final String productId = DateTime.now().microsecondsSinceEpoch.toString();
     final product = ProductModel(
-      productName: _productController.text,
+      name: _productController.text,
       category: categoryId!,
       brand: brandId!,
-      productImagePath: _pickedImage!.path,
+      imagePath: _pickedImage!.path,
       color: _colorController.text,
-      quantity: int.tryParse(_quantityController.text) ?? 0, 
-      price: double.tryParse(_priceController.text) ?? 0.0, 
+      quantity: int.tryParse(_quantityController.text) ?? 0,
+      price: double.tryParse(_priceController.text) ?? 0.0,
       description: _descriptionController.text,
       id: productId,
     );
@@ -98,7 +98,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     Navigator.pop(context, 1);
   }
-
 
   void _showSourceChoice() {
     showDialog(
