@@ -35,16 +35,6 @@ class CustomHeader extends StatelessWidget {
               ),
               Row(
                 children: [
-                  IconButton(
-                    onPressed: () {
-                    // need to add the searching functionality
-                    },
-                    icon: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
                     child: CircleAvatar(

@@ -49,18 +49,11 @@ class _ProductsViewingScreenState extends State<ProductsViewingScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: Text("Products in ${widget.categoryName}"),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
-          ),
+        child: AppBar(
+          title: Text("Products in ${widget.categoryName}"),
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
       body: isLoading

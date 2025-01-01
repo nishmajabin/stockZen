@@ -1,7 +1,6 @@
-
 import 'dart:developer';
 import 'package:hive/hive.dart';
-import 'package:stockzen/functions/product_db.dart';
+
 import 'package:stockzen/models/product_model.dart';
 import 'package:stockzen/models/sales_model.dart';
 
@@ -10,13 +9,10 @@ Future<void> addSale(SalesModel sale) async {
   final salesBox = await Hive.openBox<SalesModel>('salesBox');
 
   //Reduce stock for each product in the sale
-  for(final product in sale.products){
-    await ProductDb().reduceProductQuantity(product.id, sale.saleQuantity);
-  }
+
   await salesBox.add(sale);
   log('Sale added successfully');
 }
-
 
 // Function to get all sales
 Future<List<SalesModel>> getAllSales() async {
@@ -39,9 +35,11 @@ Future<void> deleteSale(SalesModel sale) async {
 }
 
 Future<String> getProductNameById(String productId) async {
-  final productBox = await Hive.openBox<ProductModel>('productBox'); // Ensure you're opening the correct box
+  final productBox = await Hive.openBox<ProductModel>(
+      'productBox'); // Ensure you're opening the correct box
   final product = productBox.get(productId);
-  
+
   // Return the product name or an empty string if not found
-  return product?.name ?? ''; // Change `name` to the appropriate field in your ProductModel
+  return product?.name ??
+      ''; // Change `name` to the appropriate field in your ProductModel
 }

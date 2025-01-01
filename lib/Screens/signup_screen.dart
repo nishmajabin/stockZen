@@ -1,11 +1,9 @@
-// import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stockzen/bottom.dart';
 import 'package:stockzen/constant.dart';
-import 'package:stockzen/functions/userdb.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
+import 'package:stockzen/functions/user_db.dart';
 import 'package:stockzen/main.dart';
 import 'package:stockzen/models/usermodel.dart';
 
@@ -40,7 +38,7 @@ class _SignupScreenState extends State<SignupScreen> {
         email: emailController.text,
         password: passwordController.text,
         image: null);
-        
+
     addUser(user);
   }
 
@@ -288,8 +286,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               userAccess();
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const InventoryScreen()),
+                                  builder: (context) => const BottomNavPage(),
+                                ),
                               );
                             }
                           },

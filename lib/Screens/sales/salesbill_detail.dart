@@ -19,7 +19,10 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: primaryColor,
-        title: const Text('Sale Details',style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Sale Details',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
         elevation: 0,
       ),
@@ -50,7 +53,8 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Sale Information', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Sale Information',
+                style: Theme.of(context).textTheme.headlineMedium),
             Divider(),
             _buildInfoRow('Date', widget.sale.date.toString()),
             _buildInfoRow('Customer Name', widget.sale.customerName),
@@ -83,7 +87,8 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text('Products', style: Theme.of(context).textTheme.titleLarge),
+            child:
+                Text('Products', style: Theme.of(context).textTheme.titleLarge),
           ),
           ListView.separated(
             shrinkWrap: true,
@@ -92,14 +97,14 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
             separatorBuilder: (context, index) => Divider(height: 1),
             itemBuilder: (context, index) {
               final product = widget.sale.products[index];
+              final salesQuantity = widget.sale.saleQuantity;
 
-                // print('Product: ${product.name}, Quantity: ${product.quantity}');
+              // print('Product: ${product.name}, Quantity: ${product.quantity}');
 
               return ListTile(
                 title: Text(product.name),
                 subtitle: Text('Price: \$${product.price}'),
-                trailing: Text('Qty: ${product.quantity}'),
-                
+                trailing: Text('Qty: ${salesQuantity}'),
               );
             },
           ),
@@ -112,7 +117,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color:Color(0xFF4CAF50),
+      color: Color(0xFF4CAF50),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -120,11 +125,17 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
           children: [
             Text(
               'Total Amount',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: Colors.white),
             ),
             Text(
-              '\₹${widget.sale.totalAmount ??0.0}',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+              '\₹${widget.sale.totalAmount ?? 0.0}',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: Colors.white),
             ),
           ],
         ),

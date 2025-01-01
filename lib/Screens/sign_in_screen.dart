@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/constant.dart';
-import 'package:stockzen/functions/userdb.dart';
+import 'package:stockzen/functions/user_db.dart';
 import 'package:stockzen/main.dart';
 
 class SignInScreen extends StatefulWidget {

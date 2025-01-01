@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:stockzen/Screens/sales/sales_add.dart';
 import 'package:stockzen/models/product_model.dart';
 
 class ProductDb {
@@ -60,23 +63,50 @@ class ProductDb {
     }
     return productsC;
   }
+  // Future<void> reduceProductQuantity(String productId, int quantitySold) async {
+  //   final box = await Hive.openBox<ProductModel>('products');
+  //   int newCount = quantitySold;
+  //   final index =
+  //       box.values.toList().indexWhere((value) => productId == value.id);
+  //   final product = box.getAt(index);
+  //   if (product != null) {
+  //     final newProduct = product;
+  //     newProduct.quantity = newCount;
+  //     log('count:${newProduct.quantity},parameter: $newCount');
+  //     box.putAt(index, newProduct);
+  //   }
+  // }
 
-  Future<void> reduceProductQuantity(
-    String productId,
-    int quantitySold,
-  ) async {
+  Future<void> updateCountOfProduct(
+      List<SelectedProduct> selectedProducts) async {
     final box = await Hive.openBox<ProductModel>('products');
+    try {
+      for (var sp in selectedProducts) {
+        final product = sp.product;
+        log('${product.quantity} >>>> this is default value');
 
-    final product = box.get(productId);
-    if (product != null) {
-      // Check if enough stock is available
-      if (product.quantity >= quantitySold) {
-        product.quantity -= quantitySold; // Reduce quantity
-        await box.put(productId, product); // Update the product in the box
-      } else {
-        throw Exception(
-            'Not enough stock available for product: ${product.name}');
+        // Calculate the new quantity
+        final newQuantity = product.quantity - sp.quantity;
+        log('${newQuantity} >>>> this is new value');
+
+        // Find the product in the box by ID
+        final index =
+            box.values.toList().indexWhere((value) => product.id == value.id);
+        if (index != -1) {
+          final updatedProduct = box.getAt(index);
+          if (updatedProduct != null) {
+            updatedProduct.quantity = newQuantity;
+            log('Updating product quantity: ${updatedProduct.quantity}');
+
+            // Update the product in the box
+            await box.putAt(index, updatedProduct);
+          }
+        } else {
+          log('Product with ID ${product.id} not found in the box');
+        }
       }
-    }
+    } catch (e) {
+      log('Error updating product count: $e');
+    } 
   }
 }

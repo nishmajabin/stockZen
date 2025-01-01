@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/brand/products_brands.dart';
+import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
-import 'package:stockzen/models/product_model.dart';
 
 class BrandListScreen extends StatefulWidget {
   const BrandListScreen({super.key});
@@ -14,15 +14,19 @@ class BrandListScreen extends StatefulWidget {
 }
 
 class _BrandListScreenState extends State<BrandListScreen> {
+  final TextEditingController _searchController = TextEditingController();
   List<BrandModel> brands = [];
   final BrandDb _brandDbFunction = BrandDb();
   bool _isLoadingBrands = true;
-  List<ProductModel> products = [];
+  List<BrandModel> filteredBrands = [];
 
   @override
   void initState() {
     super.initState();
     _fetchBrands();
+    _searchController.addListener(() {
+      _filterBrands(_searchController.text);
+    });
   }
 
   void _fetchBrands() async {
@@ -30,12 +34,13 @@ class _BrandListScreenState extends State<BrandListScreen> {
       _isLoadingBrands = true;
     });
     try {
-      final fetchedBrands = _brandDbFunction.getBrands();
+      final fetchedBrands = await _brandDbFunction.getBrands();
       setState(() {
         brands = fetchedBrands;
+        filteredBrands = List.from(brands);
       });
     } catch (e) {
-      // print("Error fetching categories: $e");
+      print("Error fetching brands: $e");
     } finally {
       setState(() {
         _isLoadingBrands = false;
@@ -43,70 +48,89 @@ class _BrandListScreenState extends State<BrandListScreen> {
     }
   }
 
+  void _filterBrands(String query) {
+    setState(() {
+      filteredBrands = brands
+          .where((brand) =>
+              (brand.name.toLowerCase()).contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: const Text(
-              'All Brands',
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
+        child: AppBar(
+          title: const Text(
+            'All Brands',
           ),
+          backgroundColor:primaryColor  ,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
-      body: _isLoadingBrands
-          ? const Center(child: CircularProgressIndicator())
-          : brands.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No Brands added yet!',
-                    style: TextStyle(color: primaryColor, fontSize: 16),
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: brands.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (ctx) => ProductsViewingBrandScreen(
-                                      brandID: brands[index].id,
-                                      brandName: brands[index].name)));
-                        },
-                        child: buildBrandCard(
-                          brands[index].name,
-                          brands[index].imagePath,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: CustomTextFormField(
+              controller: _searchController,
+              labelText: 'Search',
+              hintText: 'search brands...',
+              icon: Icons.search,
+            ),
+          ),
+          Expanded(
+            child: _isLoadingBrands
+                ? const Center(child: CircularProgressIndicator())
+                : filteredBrands.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No Brands added yet!',
+                          style: TextStyle(color: primaryColor, fontSize: 16),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          itemCount: filteredBrands.length,
+                          itemBuilder: (context, index) {
+                            final brand = filteredBrands[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) =>
+                                            ProductsViewingBrandScreen(
+                                                brandID: brand.id,
+                                                brandName: brand.name)));
+                              },
+                              child: buildBrandCard(
+                                brand.name,
+                                brand.imagePath,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildBrandCard(String title, String imagepath) {
     return Card(
-      color: const Color.fromARGB(199, 7, 46, 74),
+      color: cardColor2,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -118,6 +142,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
             Image.file(
               File(imagepath),
               height: 155,
+              width: 200,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
@@ -127,17 +152,18 @@ class _BrandListScreenState extends State<BrandListScreen> {
                 );
               },
             ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6.5),
-              child: Align(
-                alignment: Alignment.bottomCenter,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 7),
                 child: Text(
                   title,
                   style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

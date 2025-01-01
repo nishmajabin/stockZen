@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:stockzen/Screens/brand/edit_brand_screen.dart';
 import 'package:stockzen/Screens/category/edit_category_screen.dart';
 import 'package:stockzen/Screens/product/edit_product_screen.dart';
+import 'package:stockzen/Screens/product/product_details_screen.dart';
+import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/functions/product_db.dart';
@@ -30,6 +31,16 @@ class CustomHorizontalListView extends StatelessWidget {
               valueListenable: box.listenable(),
               builder: (context, value, child) {
                 final data = value.values.toList();
+                if (data.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No items added yet! click + to add!',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 217, 212, 212)),
+                    ),
+                  );
+                }
+
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: data.length,
@@ -37,6 +48,16 @@ class CustomHorizontalListView extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 16.0),
                       child: GestureDetector(
+                        onTap: () {
+                          final item = data[index];
+                          if (item is ProductModel) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => ProductDetailsScreen(
+                                        product: data[index])));
+                          }
+                        },
                         child: Container(
                           width: 140,
                           decoration: BoxDecoration(
@@ -101,6 +122,7 @@ class CustomHorizontalListView extends StatelessWidget {
                                   child: Theme(
                                     data: Theme.of(context).copyWith(
                                       popupMenuTheme: const PopupMenuThemeData(
+                                        color: primaryColor,
                                         textStyle:
                                             TextStyle(color: Colors.white),
                                       ),
@@ -144,8 +166,7 @@ class CustomHorizontalListView extends StatelessWidget {
                                                     EditProductScreen(
                                                   product: newProduct,
                                                   productKey: newProduct.id,
-                                                  productName:
-                                                      newProduct.name,
+                                                  productName: newProduct.name,
                                                   brand: newProduct.brand,
                                                   category: newProduct.category,
                                                   image: newProduct.imagePath,
@@ -165,10 +186,9 @@ class CustomHorizontalListView extends StatelessWidget {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: const Text(
-                                                    'Delete Product'),
+                                                title: const Text('Delete'),
                                                 content: const Text(
-                                                    'Are you sure you want to delete this product?'),
+                                                    'Are you sure you want to delete?'),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
@@ -249,56 +269,3 @@ class CustomHorizontalListView extends StatelessWidget {
         ));
   }
 }
-        // child: isLoading
-        //     ? const Center(child: CircularProgressIndicator())
-        //     : itemCount == 0
-        //         ? Center(
-        //             child: Text(
-        //               emptyMessage,
-        //               style: const TextStyle(color: Colors.white),
-        //             ),
-        //           )
-        //         : ListView.builder(
-        //             scrollDirection: Axis.horizontal,
-        //             itemCount: itemCount,
-        //             itemBuilder: (context, index) {
-        //               return Padding(
-        //                 padding: const EdgeInsets.only(right: 16.0),
-        //                 child: GestureDetector(
-        //                   onTap: () => Navigator.push(
-        //                     context,
-        //                     MaterialPageRoute(
-        //                       builder: (ctx) => onNavigate(context, index),
-        //                     ),
-        //                   ),
-        //                   child: childBuilder(context, index),
-        //                 ),
-        //               );
-        //             },
-        //           ),
-          // final int itemCount;
-  // final Widget Function(BuildContext context, int index) childBuilder;
-  // final Widget Function(BuildContext context, int index) onNavigate;
-  // final bool isLoading;
-  // final String emptyMessage;
-      // required this.model,
-    // required this.itemCount,
-    // required this.childBuilder,
-    // required this.onNavigate,
-    // this.isLoading = false,
-    // this.emptyMessage = 'No items available. Please add some.',
-              // onTap: () => Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (ctx) => onNavigate(context, index),
-                        //   ),
-                        // ),
-                        // child: childBuilder(context, index),
-                        // child: Container(
-                        //   width: 100,
-                        //   height: 80,
-                        //   child: Column(
-                        //     children: [Text(data[index].name)],
-                        //   ),
-                        // ),
-                         // final String model;

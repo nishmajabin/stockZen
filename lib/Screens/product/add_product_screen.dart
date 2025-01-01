@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stockzen/Screens/custom_appbar.dart';
+import 'package:stockzen/Screens/product/widgets/custom_dropdown.dart';
+import 'package:stockzen/Screens/product/widgets/custom_text.dart';
+import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';
@@ -73,14 +76,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> saveProduct() async {
-    // Validate if required fields are null
     if (categoryId == null || brandId == null || _pickedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill all required fields.")),
       );
       return;
     }
-
     final String productId = DateTime.now().microsecondsSinceEpoch.toString();
     final product = ProductModel(
       name: _productController.text,
@@ -93,9 +94,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       description: _descriptionController.text,
       id: productId,
     );
-
     await ProductDb().addProduct(product);
-
     Navigator.pop(context, 1);
   }
 
@@ -133,23 +132,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: const Text(
-              'Add Product',
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
-          ),
-        ),
+      appBar: const CustomAppBar(
+        title: 'Add Product',
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -159,220 +143,74 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 35,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _productController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.shopping_bag,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Product Name',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Product name',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please add product name';
-                    }
-                    return null;
-                  },
-                ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _productController,
+                icon: Icons.shopping_bag,
+                hintText: 'Enter Product Name',
+                labelText: 'Product Name',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please add product name';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 35),
-                    child: Text(
-                      'Category:',
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _categoryController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.category,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      suffixIcon: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 45),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.centerLeft,
-                            isExpanded: true,
-                            icon: const Padding(
-                              padding: EdgeInsets.only(right: 9),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: primaryColor,
-                                size: 28,
-                              ),
-                            ),
-                            value: categoryId,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedCategory = newValue;
-                                _categoryController.text = newValue!;
-                                categoryId = selectedCategory;
-                              });
-                            },
-                            items: categories.map((category) {
-                              return DropdownMenuItem<String>(
-                                value: category.id,
-                                child: Text(category.name),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select category';
-                    }
-                    return null;
-                  },
-                ),
+              const CustomText(text: 'Category:'),
+              CustomDropDown(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _categoryController,
+                icon: Icons.category,
+                value: categoryId,
+                onChanged: (newValue) {
+                  setState(() {
+                    categoryId = newValue;
+                    _categoryController.text = newValue ?? '';
+                  });
+                },
+                dropdownItems: categories.map((category) {
+                  return DropdownMenuItem<String>(
+                    value: category.id,
+                    child: Text(category.name),
+                  );
+                }).toList(),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 35),
-                    child: Text(
-                      'Brand:',
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _brandController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.branding_watermark,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      suffixIcon: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 45),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.centerLeft,
-                            isExpanded: true,
-                            icon: const Padding(
-                              padding: EdgeInsets.only(right: 9),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: primaryColor,
-                                size: 28,
-                              ),
-                            ),
-                            value: brandId,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedBrand = newValue;
-                                _brandController.text = newValue!;
-
-                                brandId = selectedBrand;
-                              });
-                            },
-                            items: brands.map((brand) {
-                              return DropdownMenuItem<String>(
-                                value: brand.id,
-                                child: Text(brand.name),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select brand';
-                    }
-                    return null;
-                  },
-                ),
+              const CustomText(text: 'Brand:'),
+              CustomDropDown(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _brandController,
+                icon: Icons.branding_watermark,
+                value: brandId,
+                onChanged: (newValue) {
+                  setState(() {
+                    brandId = newValue;
+                    _brandController.text = newValue ?? '';
+                  });
+                },
+                dropdownItems: brands.map((brand) {
+                  return DropdownMenuItem<String>(
+                    value: brand.id,
+                    child: Text(brand.name),
+                  );
+                }).toList(),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a brand';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
@@ -413,194 +251,68 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _colorController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.color_lens,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Color',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Color',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter color';
-                    }
-                    return null;
-                  },
-                ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _colorController,
+                icon: Icons.color_lens,
+                hintText: 'Enter Color',
+                labelText: 'Color',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter color';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _quantityController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.inventory_2,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Quantity',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Quantity',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter quantity';
-                    }
-                    return null;
-                  },
-                ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _quantityController,
+                icon: Icons.inventory_2,
+                hintText: 'Enter Quantity',
+                labelText: 'Quantity',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter quantity';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _priceController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.attach_money,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Enter Price',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Price',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter price';
-                    }
-                    return null;
-                  },
-                ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _priceController,
+                icon: Icons.attach_money,
+                hintText: 'Enter price',
+                labelText: 'Price',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter price';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 35, right: 35),
-                child: TextFormField(
-                  controller: _descriptionController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.description,
-                        size: 25,
-                        color: primaryColor,
-                      ),
-                      hintText: 'Add description',
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 98, 103, 108)),
-                      labelText: 'Description',
-                      labelStyle: const TextStyle(color: primaryColor),
-                      filled: true,
-                      fillColor: const Color.fromARGB(128, 206, 206, 206),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                            color: primaryColor,
-                            width: 1.2,
-                          )),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: primaryColor, width: 1.4))),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Add description';
-                    }
-                    return null;
-                  },
-                ),
+              CustomTextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _descriptionController,
+                icon: Icons.description,
+                hintText: 'Enter Description',
+                labelText: 'Description',
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please add description';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 25,

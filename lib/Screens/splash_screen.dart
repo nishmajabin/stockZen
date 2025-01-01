@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stockzen/bottom.dart';
 import 'package:stockzen/Screens/sign_in_screen.dart';
-import 'package:stockzen/functions/userdb.dart';
+import 'package:stockzen/functions/user_db.dart';
 import 'package:stockzen/Screens/getstarted_screen.dart';
 import 'package:stockzen/Screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
@@ -26,8 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (signed) {
           if (logoutOrnot == true) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const InventoryScreen()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const BottomNavPage()));
           } else {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const SignInScreen()));
@@ -68,29 +69,28 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
         child: Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Center(
-      child: Image.asset(
-        'assets/images/stockZennn.png',
-        width: 120,  // Adjust the width as needed
-        height: 120, // Adjust the height as needed
-      ),
-    ),
-    const SizedBox(height: 10),
-    const Text(
-      'stockZen',
-      style: TextStyle(
-        fontStyle: FontStyle.italic,
-        fontSize: 25,
-        color: primaryColor,
-        fontWeight: FontWeight.w900,
-        fontFamily: 'OleoScript',
-      ),
-    ),
-  ],
-),
-
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Image.asset(
+                'assets/images/stockZennn.png',
+                width: 120, // Adjust the width as needed
+                height: 120, // Adjust the height as needed
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'stockZen',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: 25,
+                color: primaryColor,
+                fontWeight: FontWeight.w900,
+                fontFamily: 'OleoScript',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

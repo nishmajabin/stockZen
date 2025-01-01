@@ -88,20 +88,13 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: const Text(
-              'Edit Category',
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
+        child: AppBar(
+          title: const Text(
+            'Edit Category',
           ),
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
       body: Form(

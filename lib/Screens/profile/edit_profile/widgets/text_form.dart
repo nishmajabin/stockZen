@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:stockzen/constant.dart';
 
@@ -6,6 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final double? width;
   final double? height;
   final String? suffixText;
+  final bool? readOnly;
   final IconData? icon;
   final String? hintText;
   final int? maxLines;
@@ -33,7 +36,9 @@ class CustomTextFormField extends StatelessWidget {
       this.keyboardType,
       this.autovalidateMode,
       this.onSaved,
-      this.maxLines, this.onTap});
+      this.maxLines,
+      this.onTap,
+      this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +74,10 @@ class CustomTextFormField extends StatelessWidget {
                 borderSide: const BorderSide(color: primaryColor, width: 1.4))),
         textInputAction: TextInputAction.newline,
         onTap: onTap,
-      readOnly: onTap != null,
+        
+        readOnly: onTap != null,
         validator: validator,
       ),
     );
   }
-
- 
 }

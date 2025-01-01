@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stockzen/Screens/inventory/inventory_screen.dart';
@@ -87,20 +86,13 @@ class _EditBrandScreenState extends State<EditBrandScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: const Text(
-              'Edit Brand',
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
+        child: AppBar(
+          title: const Text(
+            'Edit Brand',
           ),
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
       body: Form(

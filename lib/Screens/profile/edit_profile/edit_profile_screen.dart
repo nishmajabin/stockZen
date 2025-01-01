@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
-import 'package:stockzen/functions/userdb.dart';
+import 'package:stockzen/functions/user_db.dart';
 import 'package:stockzen/models/usermodel.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -105,20 +104,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: const Text(
-              'Edit Profile',
-            ),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
+        child: AppBar(
+          title: const Text(
+            'Edit Profile',
           ),
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
       body: Form(
@@ -215,7 +207,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(
               height: 30,
             ),
-           CustomTextFormField(
+            CustomTextFormField(
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _editUserEmailController,
               icon: Icons.mail_outlined,
@@ -232,7 +224,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(
               height: 30,
             ),
-           CustomTextFormField(
+            CustomTextFormField(
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _editUserPdController,
               icon: Icons.lock_outline,
@@ -250,28 +242,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               height: 40,
             ),
             Container(
-                width: 200,
-                decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                        colors: [primaryColor, primaryColor2],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight),
-                    borderRadius: BorderRadius.circular(50)),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      updatedUser();
-                      Navigator.pop(context, 1);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent),
-                  child: const Text(
-                    'Update Profile',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                )),
+              width: 200,
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      colors: [primaryColor, primaryColor2],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight),
+                  borderRadius: BorderRadius.circular(50)),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    updatedUser();
+                    Navigator.pop(context, 1);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent),
+                child: const Text(
+                  'Update Profile',
+                  style: TextStyle(color: Colors.white, fontSize: 15),
+                ),
+              ),
+            ),
           ],
         ),
       ),

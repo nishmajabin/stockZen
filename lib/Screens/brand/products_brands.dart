@@ -2,10 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stockzen/Screens/product/product_details_screen.dart';
+import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/models/product_model.dart';
-
-import '../../constant.dart';
 
 class ProductsViewingBrandScreen extends StatefulWidget {
   final String brandID;
@@ -33,7 +32,7 @@ class _ProductsViewingBrandScreenState
     try {
       final values = await ProductDb().getProductsByBrands(widget.brandID);
       setState(() {
-        productsB = values; // Assuming values is a List<ProductModel>
+        productsB = values; 
         isLoading = false;
       });
     } catch (e) {
@@ -49,18 +48,11 @@ class _ProductsViewingBrandScreenState
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor2],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: AppBar(
-            title: Text("Products by ${widget.brandName}"),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            centerTitle: true,
-          ),
+        child: AppBar(
+          title: Text("Products by ${widget.brandName}"),
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
       ),
       body: isLoading
@@ -73,8 +65,8 @@ class _ProductsViewingBrandScreenState
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                     ),
                     itemCount: productsB.length,
                     itemBuilder: (context, index) {
@@ -86,7 +78,7 @@ class _ProductsViewingBrandScreenState
                                   builder: (ctx) => ProductDetailsScreen(
                                       product: productsB[index])));
                         },
-                        child: _buildBrandCard(
+                        child: buildBrandCard(
                           productsB[index].name,
                           productsB[index].price.toString(),
                           productsB[index].imagePath,
@@ -98,7 +90,7 @@ class _ProductsViewingBrandScreenState
     );
   }
 
-  Widget _buildBrandCard(String title, String price, String imagepath) {
+  Widget buildBrandCard(String title, String price, String imagepath) {
     return Card(
       color: const Color.fromARGB(200, 182, 211, 233),
       elevation: 4,
