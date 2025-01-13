@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stockzen/constant.dart';
 
 class CustomImagePicker extends StatefulWidget {
+  const CustomImagePicker({super.key});
+
   @override
   _CustomImagePickerState createState() => _CustomImagePickerState();
 }

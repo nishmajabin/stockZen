@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
 
 class AddBrandScreen extends StatefulWidget {
   const AddBrandScreen({super.key});
@@ -71,17 +72,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Add Brand',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Add Brand'),
       body: Form(
         key: _formKey,
         child: Column(

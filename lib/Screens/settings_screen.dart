@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/about_us_screen.dart';
+import 'package:stockzen/screens/about_us_screen.dart';
 import 'package:stockzen/constant.dart';
 
 class SettingsScreen extends StatelessWidget {

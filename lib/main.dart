@@ -4,7 +4,7 @@ import 'package:stockzen/models/category_model.dart';
 import 'package:stockzen/models/sales_model.dart';
 import 'package:stockzen/models/usermodel.dart';
 import 'package:stockzen/models/product_model.dart';
-import 'package:stockzen/Screens/splash_screen.dart';
+import 'package:stockzen/screens/splash_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 const userLogged = 'userLogged';

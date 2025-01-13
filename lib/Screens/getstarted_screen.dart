@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stockzen/constant.dart';
-import 'package:stockzen/Screens/signup_screen.dart';
+import 'package:stockzen/screens/signup_screen.dart';
 
 class GetstartedScreen extends StatelessWidget {
   const GetstartedScreen({super.key});
@@ -30,8 +30,9 @@ class GetstartedScreen extends StatelessWidget {
                     padding: EdgeInsets.only(top: 350),
                     child: Center(
                       child: CircleAvatar(
+                        backgroundColor: Colors.white,
                         radius: 80,
-                        backgroundImage: AssetImage('assets/images/logo.png'),
+                        backgroundImage: AssetImage('assets/images/app_icon.png'),
                       ),
                     ),
                   ),

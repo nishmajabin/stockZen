@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/inventory/inventory_screen.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/models/category_model.dart';
@@ -18,6 +19,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
   // ignore: non_constant_identifier_names
   final TextEditingController _categoryNameController = TextEditingController();
+  @override
   void initState() {
     super.initState();
     setState(() {
@@ -86,17 +88,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Edit Category',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Edit Category'),
       body: Form(
         key: _formKey,
         child: Column(

@@ -1,10 +1,10 @@
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
-import 'package:stockzen/Screens/sales/sales_billing.dart';
-import 'package:stockzen/Screens/stock%20out/stock_out_screen.dart';
-import 'package:stockzen/Screens/analytics/analytics_screen.dart';
+import 'package:stockzen/screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/sales/sales_billing.dart';
+import 'package:stockzen/screens/stock%20out/stock_out_screen.dart';
+import 'package:stockzen/screens/analytics/analytics_screen.dart';
 import 'package:stockzen/constant.dart';
 
 class BottomNavPage extends StatefulWidget {
@@ -32,7 +32,6 @@ class BottomNavPageState extends State<BottomNavPage> {
         labelStyle: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-
         ),
       ),
       TabItem(
@@ -95,10 +94,10 @@ class BottomNavPageState extends State<BottomNavPage> {
         selectedPage = const InventoryScreen();
         break;
       case 1:
-        selectedPage = SalesPage();
+        selectedPage = const SalesPage();
         break;
       case 2:
-        selectedPage =  StockAvailabilityPage();
+        selectedPage = const StockAvailabilityPage();
         break;
       case 3:
         selectedPage = const RevenuePage();
@@ -117,7 +116,7 @@ class BottomNavPageState extends State<BottomNavPage> {
       controller: _navigationController,
       selectedPos: selectedPos,
       barHeight: bottomNavBarHeight,
-      barBackgroundColor: primaryColor,
+      barBackgroundColor: const Color.fromARGB(255, 9, 37, 58),
       backgroundBoxShadow: const <BoxShadow>[
         BoxShadow(color: Colors.black45, blurRadius: 10.0),
       ],

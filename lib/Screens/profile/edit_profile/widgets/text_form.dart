@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:stockzen/constant.dart';
@@ -45,6 +44,7 @@ class CustomTextFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 35, right: 35),
       child: TextFormField(
+        
         autovalidateMode: autovalidateMode,
         controller: controller,
         decoration: InputDecoration(

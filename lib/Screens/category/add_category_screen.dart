@@ -5,6 +5,7 @@ import 'package:stockzen/functions/category_db.dart';
 import 'dart:io';
 
 import 'package:stockzen/models/category_model.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
@@ -76,17 +77,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Add Category',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Add Category'),
       body: Form(
         key: _formKey,
         child: Column(

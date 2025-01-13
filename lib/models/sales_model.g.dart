@@ -23,7 +23,7 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       customerNumber: fields[3] as String,
       products: (fields[4] as List).cast<ProductModel>(),
       totalAmount: fields[5] as double?,
-      saleQuantity: fields[6] as int,
+      productQuantities: (fields[6] as Map?)?.cast<String, int>(),
     );
   }
 
@@ -44,7 +44,7 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       ..writeByte(5)
       ..write(obj.totalAmount)
       ..writeByte(6)
-      ..write(obj.saleQuantity);
+      ..write(obj.productQuantities);
   }
 
   @override

@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/category/products_viewing_categorised.dart';
-import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
+import 'package:stockzen/screens/category/products_viewing_categorised.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/models/category_model.dart';
@@ -35,7 +36,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     });
 
     try {
-      final fetchedCategories = await _categoryDbFunction.getCategories();
+      final fetchedCategories = _categoryDbFunction.getCategories();
       setState(() {
         categories = fetchedCategories;
         filteredCategories = List.from(categories);
@@ -61,15 +62,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text('All Categories'),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'All Categories'),
       body: Column(
         children: [
           Padding(

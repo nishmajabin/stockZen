@@ -36,10 +36,11 @@ Future<void> deleteSale(SalesModel sale) async {
 
 Future<String> getProductNameById(String productId) async {
   final productBox = await Hive.openBox<ProductModel>(
-      'productBox'); // Ensure you're opening the correct box
-  final product = productBox.get(productId);
-
-  // Return the product name or an empty string if not found
+      'products'); // Ensure you're opening the correct box
+  final index =
+      productBox.values.toList().indexWhere((value) => value.id == productId);
+  final product = productBox.getAt(index);
+  log('tthis funcion called >>>>>>>>>>>>>');
   return product?.name ??
       ''; // Change `name` to the appropriate field in your ProductModel
 }

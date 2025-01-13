@@ -1,17 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
-import 'package:stockzen/Screens/product/widgets/custom_text.dart';
-import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/product/widgets/custom_text.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
-// import 'package:stockzen/functions/brand_db.dart';
-// import 'package:stockzen/functions/category_db.dart';
 import 'package:stockzen/functions/product_db.dart';
-// import 'package:stockzen/models/brand_model.dart';
-// import 'package:stockzen/models/category_model.dart';
 import 'package:stockzen/models/product_model.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -104,7 +100,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         id: widget.product.id);
     ProductDb().updateProduct(productKey, editedProduct);
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (ctx) => InventoryScreen()), (_) => true);
+        MaterialPageRoute(builder: (ctx) => const InventoryScreen()), (_) => true);
   }
 
   void _showSourceChoice() {
@@ -141,17 +137,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Edit Product',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Edit Product'),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -160,7 +146,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               const SizedBox(
                 height: 30,
               ),
-              CustomText(text: 'Product Image:'),
+              const CustomText(text: 'Product Image:'),
               Padding(
                 padding: const EdgeInsets.only(left: 35, right: 35),
                 child: GestureDetector(
@@ -175,7 +161,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     ),
                     child: _pickedImage != null
                         ? Image.file(_pickedImage!, fit: BoxFit.cover)
-                        : widget.image != null && widget.image.isNotEmpty
+                        : widget.image.isNotEmpty
                             ? Image.file(File(widget.image), fit: BoxFit.cover)
                             : const Icon(
                                 Icons.add_a_photo,
@@ -184,7 +170,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               CustomTextFormField(

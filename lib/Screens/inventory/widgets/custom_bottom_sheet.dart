@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/brand/add_brand_screen.dart';
-import 'package:stockzen/Screens/category/add_category_screen.dart';
-import 'package:stockzen/Screens/product/add_product_screen.dart';
+import 'package:stockzen/screens/brand/add_brand_screen.dart';
+import 'package:stockzen/screens/category/add_category_screen.dart';
+import 'package:stockzen/screens/product/add_product_screen.dart';
 import 'package:stockzen/constant.dart';
 
 class CustomWidget extends StatelessWidget {

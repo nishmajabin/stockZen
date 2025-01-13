@@ -1,15 +1,15 @@
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stockzen/Screens/profile/edit_profile/edit_profile_screen.dart';
-import 'package:stockzen/Screens/privacy_policy_screen.dart';
-import 'package:stockzen/Screens/settings_screen.dart';
-import 'package:stockzen/Screens/sign_in_screen.dart';
+import 'package:stockzen/screens/privacy_policy.dart';
+import 'package:stockzen/screens/profile/edit_profile/edit_profile_screen.dart';
+import 'package:stockzen/screens/settings_screen.dart';
+import 'package:stockzen/screens/sign_in_screen.dart';
+import 'package:stockzen/screens/terms_and_conditions.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/user_db.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/inventory/inventory_screen.dart';
 import 'package:stockzen/main.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -265,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     (context),
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const PrivacyPolicyScreen()));
+                                            const PrivacyPolicy()));
                               },
                               iconColor: primaryColor,
                               textColor: primaryColor,
@@ -280,18 +280,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: secondaryColor,
                               thickness: 1,
                             ),
-                            const ListTile(
+                            ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    (context),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TermsConditions()));
+                              },
                               iconColor: primaryColor,
                               textColor: primaryColor,
-                              leading: Padding(
+                              leading: const Padding(
                                 padding: EdgeInsets.all(2.0),
                                 child: Icon(
                                   FontAwesomeIcons.solidFileLines,
                                   size: 20,
                                 ),
                               ),
-                              title: Text('Terms and Conditions'),
-                              trailing: Icon(
+                              title: const Text('Terms and Conditions'),
+                              trailing: const Icon(
                                 Icons.arrow_forward_ios,
                                 size: 20,
                               ),

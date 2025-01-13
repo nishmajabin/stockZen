@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/product/product_details_screen.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/product/product_details_screen.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/models/product_model.dart';
@@ -19,20 +21,36 @@ class ProductsViewingBrandScreen extends StatefulWidget {
 
 class _ProductsViewingBrandScreenState
     extends State<ProductsViewingBrandScreen> {
+  // Adding search functionality state variables
+  final TextEditingController _searchController = TextEditingController();
   List<ProductModel> productsB = [];
+  List<ProductModel> filteredProducts = []; // New list for filtered results
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _fetchBrandDetails();
+    // Adding search listener
+    _searchController.addListener(() {
+      _filterProducts(_searchController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clean up controller when widget is disposed
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _fetchBrandDetails() async {
     try {
       final values = await ProductDb().getProductsByBrands(widget.brandID);
       setState(() {
-        productsB = values; 
+        productsB = values;
+        filteredProducts =
+            List.from(productsB); // Initialize filtered list with all products
         isLoading = false;
       });
     } catch (e) {
@@ -43,50 +61,71 @@ class _ProductsViewingBrandScreenState
     }
   }
 
+  // New method to filter products based on search query
+  void _filterProducts(String query) {
+    setState(() {
+      filteredProducts = productsB
+          .where((product) =>
+              product.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: Text("Products by ${widget.brandName}"),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : productsB.isEmpty
-              ? const Center(child: Text("No products available."))
-              : Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: productsB.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (ctx) => ProductDetailsScreen(
-                                      product: productsB[index])));
-                        },
-                        child: buildBrandCard(
-                          productsB[index].name,
-                          productsB[index].price.toString(),
-                          productsB[index].imagePath,
+      appBar: CustomAppBar(title: "Products by ${widget.brandName}"),
+      body: Column(
+        children: [
+          // Adding search field
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: CustomTextFormField(
+              controller: _searchController,
+              labelText: 'Search',
+              hintText: 'search products...',
+              icon: Icons.search,
+              height: 5,
+            ),
+          ),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : filteredProducts.isEmpty
+                    ? const Center(child: Text("No products available."))
+                    : Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          itemCount:
+                              filteredProducts.length, // Using filtered list
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) => ProductDetailsScreen(
+                                            product: filteredProducts[
+                                                index]))); // Using filtered list
+                              },
+                              child: buildBrandCard(
+                                filteredProducts[index].name,
+                                filteredProducts[index].price.toString(),
+                                filteredProducts[index].imagePath,
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:stockzen/Screens/sales/sales_add.dart';
-import 'package:stockzen/Screens/sales/salesbill_detail.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/sales/sales_add.dart';
+import 'package:stockzen/screens/sales/salesbill_detail.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/models/sales_model.dart';
+import 'package:stockzen/screens/sales/widgets/custom_row_text.dart';
 
 class SalesPage extends StatefulWidget {
+  const SalesPage({super.key});
+
   @override
   _SalesPageState createState() => _SalesPageState();
 }
@@ -22,7 +26,6 @@ class _SalesPageState extends State<SalesPage> {
     _fetchSales(); // Fetch sales data when the page is initialized
   }
 
-  // Fetch sales data from Hive database and filter by date range
   Future<void> _fetchSales() async {
     final salesBox = await Hive.openBox<SalesModel>('salesBox');
     setState(() {
@@ -34,7 +37,6 @@ class _SalesPageState extends State<SalesPage> {
     _filterSalesByDateRange(); // Filter sales based on selected date range
   }
 
-  // Show the date range picker to allow user to select a date range
   Future<void> _selectDate(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
@@ -56,20 +58,19 @@ class _SalesPageState extends State<SalesPage> {
     }
   }
 
-  // Filter sales based on the selected date range
   void _filterSalesByDateRange() {
     if (_selectedDateRange == null) {
       _sales = List.from(_allSales); // No date range selected, show all sales
     } else {
       final DateFormat dateFormat =
-          DateFormat('dd-MM-yyyy'); // Date format for parsing
+          DateFormat('dd-MMM-yyyy'); // Date format for parsing
       setState(() {
         _sales = _allSales.where((sale) {
           DateTime saleDate = dateFormat.parse(sale.date);
-          return saleDate.isAfter(
-                  _selectedDateRange!.start.subtract(const Duration(days: 1))) &&
-              saleDate.isBefore(_selectedDateRange!.end.add(
-                  const Duration(days: 1))); // Filter sales within the selected range
+          return saleDate.isAfter(_selectedDateRange!.start
+                  .subtract(const Duration(days: 1))) &&
+              saleDate.isBefore(_selectedDateRange!.end.add(const Duration(
+                  days: 1))); // Filter sales within the selected range
         }).toList();
       });
     }
@@ -78,17 +79,12 @@ class _SalesPageState extends State<SalesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false, // Disable back button
-        title: const Text('Sales', style: TextStyle(color: Colors.white)),
-        centerTitle: true, // Center the title
-        backgroundColor: primaryColor, // Set the app bar color
+      appBar: CustomAppBar(
+        title: 'Sales',
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_today, color: Colors.white),
-            onPressed: () => _selectDate(
-                context), // Open date picker when the calendar icon is pressed
-          ),
+              onPressed: () => _selectDate(context),
+              icon: Icon(Icons.calendar_today))
         ],
       ),
       body: Column(
@@ -100,7 +96,8 @@ class _SalesPageState extends State<SalesPage> {
             child: Row(
               children: [
                 const Icon(Icons.date_range, color: primaryColor),
-                const SizedBox(width: 8), // Add some spacing between icon and text
+                const SizedBox(
+                    width: 8), // Add some spacing between icon and text
                 Expanded(
                   child: Text(
                     _selectedDateRange == null
@@ -117,7 +114,6 @@ class _SalesPageState extends State<SalesPage> {
               ],
             ),
           ),
-
           Expanded(
             child: _sales.isEmpty
                 ? Center(
@@ -125,9 +121,7 @@ class _SalesPageState extends State<SalesPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.shopping_cart,
-                            size: 80,
-                            color: Colors.grey[
-                                400]), // Display an icon when no sales are available
+                            size: 80, color: Colors.grey[400]),
                         const SizedBox(height: 16),
                         const Text(
                           'No sales in selected date range',
@@ -142,49 +136,69 @@ class _SalesPageState extends State<SalesPage> {
                       ],
                     ),
                   )
-                : ListView.separated(
-                    itemCount:
-                        _sales.length, // Total number of sales to display
-                    separatorBuilder: (context, index) =>
-                        const Divider(), // Divider between list items
+                : ListView.builder(
+                    itemCount: _sales.length,
+                    padding: const EdgeInsets.all(16),
                     itemBuilder: (context, index) {
                       final sale = _sales[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: primaryColor,
-                          child: Text(
-                            sale.customerName[0]
-                                .toUpperCase(), // First letter of customer name
-                            style: const TextStyle(color: Colors.white),
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(148, 156, 186, 208),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SaleDetailsPage(sale: sale),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomRowWidget(
+                                    icon: Icons.person,
+                                    text:
+                                        '${sale.customerName[0].toUpperCase()}${sale.customerName.substring(1).toLowerCase()}',
+                                    color: cardColor2,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomRowWidget(
+                                    icon: Icons.phone,
+                                    text: 'Mobile: ${sale.customerNumber}',
+                                    color: primaryColor,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomRowWidget(
+                                    icon: Icons.calendar_today,
+                                    text: 'Date: ${sale.date}',
+                                    color: primaryColor,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomRowWidget(
+                                    icon: Icons.attach_money,
+                                    text: 'Total Amount: ₹${sale.totalAmount}',
+                                    color:
+                                        const Color.fromARGB(255, 17, 65, 19),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        title: Text(sale.customerName,
-                            style: const TextStyle(
-                                fontWeight:
-                                    FontWeight.bold)), // Display customer name
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                'Phone: ${sale.customerNumber}'), // Display customer number
-                            Text('Date: ${sale.date}'), // Display sale date
-                          ],
-                        ),
-                        trailing: const Icon(Icons
-                            .chevron_right), // Right arrow icon for navigation
-                        onTap: () {
-                          // Navigate to the sale details page when tapped
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SaleDetailsPage(sale: sale),
-                            ),
-                          );
-                        },
                       );
                     },
                   ),
-          ),
+          )
         ],
       ),
 
@@ -200,7 +214,8 @@ class _SalesPageState extends State<SalesPage> {
             _fetchSales(); // Refresh sales after adding a new one
           });
         },
-        icon: const Icon(Icons.add, color: Colors.white), // Plus icon for the button
+        icon: const Icon(Icons.add,
+            color: Colors.white), // Plus icon for the button
         label: const Text('Add Sale',
             style: TextStyle(color: Colors.white)), // Button label
         backgroundColor: primaryColor, // Button color

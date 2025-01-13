@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/user_db.dart';
 import 'package:stockzen/models/usermodel.dart';
@@ -102,17 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Edit Profile',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: CustomAppBar(title: 'Edit Profile'),
       body: Form(
         key: _formKey,
         child: Column(

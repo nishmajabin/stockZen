@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:stockzen/Screens/sales/sales_add.dart';
 import 'package:stockzen/models/product_model.dart';
+import 'package:stockzen/screens/sales/widgets/selected_products_list.dart';
 
 class ProductDb {
   static final ProductDb _instance = ProductDb._internal();
@@ -63,19 +63,6 @@ class ProductDb {
     }
     return productsC;
   }
-  // Future<void> reduceProductQuantity(String productId, int quantitySold) async {
-  //   final box = await Hive.openBox<ProductModel>('products');
-  //   int newCount = quantitySold;
-  //   final index =
-  //       box.values.toList().indexWhere((value) => productId == value.id);
-  //   final product = box.getAt(index);
-  //   if (product != null) {
-  //     final newProduct = product;
-  //     newProduct.quantity = newCount;
-  //     log('count:${newProduct.quantity},parameter: $newCount');
-  //     box.putAt(index, newProduct);
-  //   }
-  // }
 
   Future<void> updateCountOfProduct(
       List<SelectedProduct> selectedProducts) async {
@@ -87,7 +74,7 @@ class ProductDb {
 
         // Calculate the new quantity
         final newQuantity = product.quantity - sp.quantity;
-        log('${newQuantity} >>>> this is new value');
+        log('$newQuantity >>>> this is new value');
 
         // Find the product in the box by ID
         final index =
@@ -107,6 +94,6 @@ class ProductDb {
       }
     } catch (e) {
       log('Error updating product count: $e');
-    } 
+    }
   }
 }

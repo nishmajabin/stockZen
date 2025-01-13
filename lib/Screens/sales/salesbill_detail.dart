@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/models/sales_model.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
 
 class SaleDetailsPage extends StatefulWidget {
   final SalesModel sale;
 
-  SaleDetailsPage({required this.sale});
+  const SaleDetailsPage({super.key, required this.sale});
 
   @override
   State<SaleDetailsPage> createState() => _SaleDetailsPageState();
@@ -16,16 +16,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: primaryColor,
-        title: const Text(
-          'Sale Details',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(title: 'Sale Details'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -33,9 +24,9 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildInfoCard(context),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildProductsList(context),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildTotalAmount(context),
             ],
           ),
@@ -46,6 +37,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
 
   Widget _buildInfoCard(BuildContext context) {
     return Card(
+      color: const Color.fromARGB(231, 203, 225, 241),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -55,7 +47,9 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
           children: [
             Text('Sale Information',
                 style: Theme.of(context).textTheme.headlineMedium),
-            Divider(),
+            const Divider(
+              color: white,
+            ),
             _buildInfoRow('Date', widget.sale.date.toString()),
             _buildInfoRow('Customer Name', widget.sale.customerName),
             _buildInfoRow('Customer Number', widget.sale.customerNumber),
@@ -71,7 +65,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
           Text(value),
         ],
       ),
@@ -81,30 +75,33 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
   Widget _buildProductsList(BuildContext context) {
     return Card(
       elevation: 2,
+      color: const Color.fromARGB(231, 203, 225, 241),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child:
-                Text('Products', style: Theme.of(context).textTheme.titleLarge),
+            child: Text(
+              'Products',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
           ListView.separated(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.sale.products.length,
-            separatorBuilder: (context, index) => Divider(height: 1),
+            separatorBuilder: (context, index) => const Divider(
+              height: 1,
+              color: white,
+            ),
             itemBuilder: (context, index) {
               final product = widget.sale.products[index];
-              final salesQuantity = widget.sale.saleQuantity;
-
-              // print('Product: ${product.name}, Quantity: ${product.quantity}');
-
+              final quantity = widget.sale.getQuantityForProduct(product.id);
               return ListTile(
                 title: Text(product.name),
                 subtitle: Text('Price: \$${product.price}'),
-                trailing: Text('Qty: ${salesQuantity}'),
+                trailing: Text('Qty: $quantity'),
               );
             },
           ),
@@ -117,7 +114,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: Color(0xFF4CAF50),
+      color: const Color(0xFF4CAF50),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -131,7 +128,7 @@ class _SaleDetailsPageState extends State<SaleDetailsPage> {
                   ?.copyWith(color: Colors.white),
             ),
             Text(
-              '\₹${widget.sale.totalAmount ?? 0.0}',
+              '₹${widget.sale.totalAmount ?? 0.0}',
               style: Theme.of(context)
                   .textTheme
                   .titleLarge

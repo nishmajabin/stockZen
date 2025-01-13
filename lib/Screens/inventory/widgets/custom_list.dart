@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:stockzen/Screens/brand/edit_brand_screen.dart';
-import 'package:stockzen/Screens/category/edit_category_screen.dart';
-import 'package:stockzen/Screens/product/edit_product_screen.dart';
-import 'package:stockzen/Screens/product/product_details_screen.dart';
+import 'package:stockzen/screens/brand/edit_brand_screen.dart';
+import 'package:stockzen/screens/category/edit_category_screen.dart';
+import 'package:stockzen/screens/product/edit_product_screen.dart';
+import 'package:stockzen/screens/product/product_details_screen.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/functions/category_db.dart';

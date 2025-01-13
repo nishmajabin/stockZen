@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockzen/bottom.dart';
-import 'package:stockzen/Screens/sign_in_screen.dart';
+import 'package:stockzen/screens/sign_in_screen.dart';
 import 'package:stockzen/functions/user_db.dart';
-import 'package:stockzen/Screens/getstarted_screen.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/getstarted_screen.dart';
 import 'package:stockzen/main.dart';
 import '../constant.dart';
 
@@ -73,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Center(
               child: Image.asset(
-                'assets/images/stockZennn.png',
+                'assets/images/app_icon.png',
                 width: 120, // Adjust the width as needed
                 height: 120, // Adjust the height as needed
               ),

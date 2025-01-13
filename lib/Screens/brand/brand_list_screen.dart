@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/brand/products_brands.dart';
-import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
+import 'package:stockzen/screens/brand/products_brands.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
@@ -34,7 +35,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
       _isLoadingBrands = true;
     });
     try {
-      final fetchedBrands = await _brandDbFunction.getBrands();
+      final fetchedBrands = _brandDbFunction.getBrands();
       setState(() {
         brands = fetchedBrands;
         filteredBrands = List.from(brands);
@@ -60,17 +61,7 @@ class _BrandListScreenState extends State<BrandListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'All Brands',
-          ),
-          backgroundColor:primaryColor  ,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'All Brands'),
       body: Column(
         children: [
           Padding(

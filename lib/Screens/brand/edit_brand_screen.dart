@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stockzen/Screens/inventory/inventory_screen.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/inventory/inventory_screen.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/brand_db.dart';
 import 'package:stockzen/models/brand_model.dart';
@@ -20,6 +21,7 @@ class _EditBrandScreenState extends State<EditBrandScreen> {
   final TextEditingController _brandNameController = TextEditingController();
   File? _pickedImage;
 
+  @override
   void initState() {
     super.initState();
     setState(() {
@@ -46,7 +48,7 @@ class _EditBrandScreenState extends State<EditBrandScreen> {
         imagePath: _pickedImage!.path);
     BrandDb().updateBrand(brand);
      Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (ctx) => InventoryScreen()), (_) => true);
+        MaterialPageRoute(builder: (ctx) => const InventoryScreen()), (_) => true);
   }
 
   void showImageSourceBottomSheet() {
@@ -84,17 +86,7 @@ class _EditBrandScreenState extends State<EditBrandScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'Edit Brand',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: CustomAppBar(title: 'Edit Brand'),
       body: Form(
         key: _formKey,
         child: Column(

@@ -6,24 +6,18 @@ part 'sales_model.g.dart';
 class SalesModel {
   @HiveField(0)
   String id;
-
   @HiveField(1)
   String date;
-
   @HiveField(2)
   String customerName;
-
   @HiveField(3)
   String customerNumber;
-
   @HiveField(4)
   List<ProductModel> products;
-
   @HiveField(5)
   final double? totalAmount;
-
   @HiveField(6)
-  int saleQuantity;
+  Map<String, int> productQuantities;
 
   SalesModel({
     required this.id,
@@ -32,6 +26,10 @@ class SalesModel {
     required this.customerNumber,
     required this.products,
     required this.totalAmount,
-    required this.saleQuantity
-  });
+    required Map<String, int>? productQuantities,
+  }) : productQuantities = productQuantities ?? {};
+
+  int getQuantityForProduct(String productId) {
+    return productQuantities[productId] ?? 0;
+  }
 }

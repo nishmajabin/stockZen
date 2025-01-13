@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:stockzen/Screens/product/product_details_screen.dart';
-import 'package:stockzen/Screens/profile/edit_profile/widgets/text_form.dart';
+import 'package:stockzen/screens/custom_appbar.dart';
+import 'package:stockzen/screens/product/product_details_screen.dart';
+import 'package:stockzen/screens/profile/edit_profile/widgets/text_form.dart';
 import 'package:stockzen/constant.dart';
 import 'package:stockzen/functions/product_db.dart';
 import 'package:stockzen/models/product_model.dart';
@@ -60,17 +61,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text(
-            'All Products',
-          ),
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'All Products'),
       body: Column(
         children: [
           Padding(
@@ -150,7 +141,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             ),
             Align(
                 alignment: Alignment.topRight,
-                child: IconButton(onPressed: () {}, icon: Icon(Icons.delete),)),
+                child: IconButton(onPressed: () {}, icon: const Icon(Icons.delete),)),
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.bottomCenter,
